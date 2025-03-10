@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>BEDROCK Media</title>
+    <description>BEDROCK is an independent media platform covering builders, consumer tech, and onchain developments.</description>
+    <link>https://bedrock.media</link>
+    <atom:link href="https://bedrock.media/rss.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language>
+    <lastBuildDate>Sun, 03 Mar 2025 12:00:00 GMT</lastBuildDate>
+    <item>
+      <title>What Can We Send to Mars on the First Starships?</title>
+      <description>Everything we need to build the first base on mars requires careful planning and resource allocation.</description>
+      <link>https://bedrock.media/article/mars-starships</link>
+      <guid isPermaLink="true">https://bedrock.media/article/mars-starships</guid>
+      <pubDate>Sun, 03 Mar 2025 12:00:00 GMT</pubDate>
+      <category>Consumer</category>
+    </item>
+    <item>
+      <title>How Tech Created the Online Fact-Checking Industry</title>
+      <description>Interviews with trust and safety workers at Meta reveal the challenges of modern fact-checking.</description>
+      <link>https://bedrock.media/article/fact-checking-industry</link>
+      <guid isPermaLink="true">https://bedrock.media/article/fact-checking-industry</guid>
+      <pubDate>Sun, 03 Mar 2025 10:00:00 GMT</pubDate>
+      <category>Consumer</category>
+    </item>
+    <item>
+      <title>The Terrorist Propaganda to Reddit Pipeline</title>
+      <description>How an ultra-leftist network hijacked some of the most popular subreddits.</description>
+      <link>https://bedrock.media/article/reddit-pipeline</link>
+      <guid isPermaLink="true">https://bedrock.media/article/reddit-pipeline</guid>
+      <pubDate>Sun, 03 Mar 2025 08:00:00 GMT</pubDate>
+      <category>Consumer</category>
+    </item>
+  </channel>
+</rss>
+
