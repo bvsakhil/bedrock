@@ -2,9 +2,9 @@
  * Global CSS styles for the entire application
  * Includes Tailwind directives, custom variables, and animations
  */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@tailwind base; /* Tailwind base styles */
+@tailwind components; /* Tailwind components styles */
+@tailwind utilities; /* Tailwind utilities styles */
 
 /* Base color variables */
 :root {
