@@ -194,27 +194,15 @@ export function NavBar() {
           side="bottom"
           className="bg-[#000000] border-t border-[#69696a]/50 rounded-t-xl max-w-full sm:max-w-lg sm:mx-auto"
         >
-          <div className="py-6 px-4 sm:px-6">
-            {/* Visual handle for bottom sheet */}
-            <div className="w-12 h-1 bg-[#ffffff]/20 rounded-full mx-auto mb-6 sm:mb-8"></div>
-            <h2 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3">Join BEDROCK</h2>
-            <p className="text-[#8d8d8d] mb-6 text-sm sm:text-base">
-              Subscribe to our newsletter to receive the latest updates on builders, consumer tech, and onchain
-              developments.
-            </p>
-            {/* Subscribe form */}
-            <div className="space-y-4">
-              <input
-                type="email"
-                placeholder="Your email address"
-                className="w-full bg-transparent border border-[#69696a]/50 p-3 text-[#ffffff] placeholder:text-[#8d8d8d] focus:outline-none focus:border-[#ffffff]/50"
-              />
-              <button className="w-full bg-[#ffffff] text-[#000000] py-3 hover:bg-[#ffffff]/90 transition-colors">
-                Subscribe
-              </button>
-            </div>
+          <div className="p-4">
+            <iframe 
+              src="https://paragraph.xyz/@akhil_bvs/embed" 
+              className="w-full h-96 bg-[#000000]" 
+              frameBorder="0" 
+              scrolling="no"
+            ></iframe>
           </div>
-        </SheetContent>
+        </SheetContent> 
       </Sheet>
     </header>
   )
