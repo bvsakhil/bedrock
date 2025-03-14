@@ -9,6 +9,9 @@ import { NavBar } from "@/app/components/nav-bar"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
+// Get the CMS API URL from environment variables
+const CMS_API_URL = process.env.NEXT_PUBLIC_CMS_API_URL || 'http://localhost:3001';
+
 // Define Post interface
 interface Post {
   id: string | number;
@@ -48,7 +51,7 @@ interface Post {
  */
 async function getPost(slug: string): Promise<Post | null> {
   try {
-    const response = await fetch(`http://localhost:3001/api/posts?where[slug][equals]=${slug}`, {
+    const response = await fetch(`${CMS_API_URL}/api/posts?where[slug][equals]=${slug}`, {
       next: { revalidate: 60 }
     });
 
@@ -123,12 +126,16 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 }
 
-// Helper function to get full URL
+/**
+ * Helper function to get full URL
+ */
 function getFullUrl(url: string): string {
-  return url.startsWith('/api') ? `http://localhost:3001${url}` : url;
+  return url && url.startsWith('/api') ? `${CMS_API_URL}${url}` : url;
 }
 
-// Helper function to get author names from post
+/**
+ * Helper function to get author names from post
+ */
 function getAuthorNames(post: Post): string[] {
   if (post.populatedAuthors && post.populatedAuthors.length > 0) {
     return post.populatedAuthors.map(author => author.name);
@@ -214,7 +221,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
         const media = node.fields.media;
         if (media && media.url) {
           const mediaUrl = media.url.startsWith('/api') 
-            ? `http://localhost:3001${media.url}` 
+            ? `${CMS_API_URL}${media.url}` 
             : media.url;
           html += `<figure class="my-8">
             <img src="${mediaUrl}" alt="${media.alt || ''}" class="w-full h-auto" />

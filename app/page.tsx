@@ -10,6 +10,9 @@ import { cache } from 'react'
 import { useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 
+// Get the CMS API URL from environment variables
+const CMS_API_URL = process.env.NEXT_PUBLIC_CMS_API_URL || 'http://localhost:3001';
+
 // Define Post interface
 interface Post {
   id: string | number;
@@ -85,7 +88,7 @@ interface Category {
 
 // Helper function to get full URL
 function getFullUrl(url: string): string {
-  return url && url.startsWith('/api') ? `http://localhost:3001${url}` : url;
+  return url && url.startsWith('/api') ? `${CMS_API_URL}${url}` : url;
 }
 
 // Helper function to get author names from post
@@ -109,7 +112,7 @@ function getAuthorNames(post: Post): string[] {
 const getPosts = cache(async (categorySlug?: string) => {
   try {
     // Build the URL with optional category filter
-    let url = 'http://localhost:3001/api/posts?limit=6&sort=-publishedAt';
+    let url = `${CMS_API_URL}/api/posts?limit=6&sort=-publishedAt`;
     
     // Add category filter if provided
     if (categorySlug) {
@@ -119,7 +122,7 @@ const getPosts = cache(async (categorySlug?: string) => {
     
     console.log('Fetching posts with URL:', url);
     
-    // Replace with your actual CMS URL
+    // Fetch posts from the CMS
     const response = await fetch(url, {
       next: { revalidate: 60 } // Revalidate every 60 seconds
     })
@@ -147,7 +150,7 @@ const getPosts = cache(async (categorySlug?: string) => {
 const getFeaturedPost = cache(async () => {
   try {
     // First try to get a post with isSpotlight=true
-    let response = await fetch('http://localhost:3001/api/posts?where[isSpotlight][equals]=true&limit=1', {
+    let response = await fetch(`${CMS_API_URL}/api/posts?where[isSpotlight][equals]=true&limit=1`, {
       next: { revalidate: 60 }
     })
     
@@ -162,7 +165,7 @@ const getFeaturedPost = cache(async () => {
     console.warn(`Spotlight post query failed or returned no results. Falling back to featured post.`)
     
     // Try to get a post with featured=true
-    response = await fetch('http://localhost:3001/api/posts?where[featured][equals]=true&limit=1', {
+    response = await fetch(`${CMS_API_URL}/api/posts?where[featured][equals]=true&limit=1`, {
       next: { revalidate: 60 }
     })
     
@@ -177,7 +180,7 @@ const getFeaturedPost = cache(async () => {
     console.warn(`Featured post query failed or returned no results. Falling back to latest post.`)
     
     // Try to get the most recent post instead
-    response = await fetch('http://localhost:3001/api/posts?sort=-publishedAt&limit=1', {
+    response = await fetch(`${CMS_API_URL}/api/posts?sort=-publishedAt&limit=1`, {
       next: { revalidate: 60 }
     })
     
@@ -204,7 +207,7 @@ const getFeaturedPost = cache(async () => {
 const getHomepage = cache(async () => {
   try {
     // Try to get the homepage from the Pages collection
-    const response = await fetch('http://localhost:3001/api/pages?where[slug][equals]=home', {
+    const response = await fetch(`${CMS_API_URL}/api/pages?where[slug][equals]=home`, {
       next: { revalidate: 60 }
     })
     
@@ -229,7 +232,7 @@ const getHomepage = cache(async () => {
 // Function to fetch all categories
 const getCategories = cache(async () => {
   try {
-    const response = await fetch('http://localhost:3001/api/categories?limit=100', {
+    const response = await fetch(`${CMS_API_URL}/api/categories?limit=100`, {
       next: { revalidate: 300 } // Cache for 5 minutes
     });
     
@@ -362,7 +365,7 @@ export default async function Home({ searchParams }: { searchParams: { category?
                     'Editorial | ' + new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: "2-digit" })
                   }
                 </span>
-              </div>
+            </div>
           </div>
         </Link>
       </section>
