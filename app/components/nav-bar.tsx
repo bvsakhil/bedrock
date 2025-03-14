@@ -95,7 +95,7 @@ export function NavBar() {
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-[#8d8d8d]">New York : -4.9°C</span>
                 </div>
-                {/* Mobile navigation links */}
+                {/* Mobile links */}
                 <nav className="flex flex-col gap-4 mt-4">
                   <Link
                     href="/builders"
