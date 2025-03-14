@@ -3,6 +3,7 @@ import "./globals.css"
 import { Archivo, Barlow, PT_Serif } from "next/font/google"
 import type { Metadata } from "next"
 import { Footer } from "./components/footer"
+import { ThemeProvider } from "@/components/theme-provider"
 
 // Load and configure fonts with Next.js font optimization
 const archivo = Archivo({
@@ -125,7 +126,7 @@ export const metadata: Metadata = {
     },
   },
   category: "news",
-    generator: 'v0.dev'
+  generator: 'v0.dev'
 }
 
 /**
@@ -138,15 +139,18 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${archivo.variable} ${barlow.variable} ${ptSerif.variable}`}>
+    <html lang="en" className={`${archivo.variable} ${barlow.variable} ${ptSerif.variable}`} suppressHydrationWarning>
       <body className="font-archivo">
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
         <Footer />
       </body>
     </html>
   )
 }
-
-
-
-import './globals.css'
