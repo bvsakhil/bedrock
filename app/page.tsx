@@ -18,6 +18,7 @@ interface Post {
   id: string | number;
   title: string;
   excerpt?: string;
+  description?: string;
   content?: {
     root: {
       children: any[];
@@ -233,7 +234,7 @@ const getHomepage = cache(async () => {
 const getCategories = cache(async () => {
   try {
     const response = await fetch(`${CMS_API_URL}/api/categories?limit=100`, {
-      next: { revalidate: 300 } // Cache for 5 minutes
+      next: { revalidate: 60 } // Cache for 5 minutes
     });
     
     if (!response.ok) {
@@ -290,14 +291,14 @@ export default async function Home({ searchParams }: { searchParams: { category?
   // Use homepage hero if available, otherwise fall back to featured post
   const heroContent = homepage?.hero ? {
     title: homepage.hero.title || homepage.title,
-    description: homepage.hero.description || '',
+    description: homepage.hero.description || 'Explore our latest featured content and stay updated with the newest trends and insights.',
     image: homepage.hero.image?.url,
     imageAlt: homepage.hero.image?.alt || homepage.title,
     slug: 'about', // Link to about page or another appropriate page
     isSpotlight: false // Homepage hero is not a spotlight
   } : featuredPost ? {
     title: featuredPost.title,
-    description: featuredPost.excerpt || '',
+    description: featuredPost.description || featuredPost.excerpt || 'Read our featured article to discover the latest insights and trends in the industry.',
     image: featuredPost.heroImage?.url || featuredPost.image?.url,
     imageAlt: featuredPost.heroImage?.alt || featuredPost.title,
     slug: featuredPost.slug,
@@ -530,7 +531,7 @@ export default async function Home({ searchParams }: { searchParams: { category?
                   <ArticleCard 
                     key={post.id}
                     title={post.title}
-                    description={post.excerpt || ''}
+                    description={post.description || post.excerpt || 'Read more about this article...'}
                     image={fullPostImageUrl}
                     category={postCategoryName}
                     author={postAuthorDisplay}
@@ -575,7 +576,7 @@ function ArticleCard({ image, title, description, category, author, date, slug }
           <h4 className="text-lg sm:text-xl md:text-2xl font-medium mb-2 sm:mb-3 leading-tight line-clamp-2">
             {title}
           </h4>
-          <p className="text-sm sm:text-base text-[#8d8d8d] leading-relaxed font-ptserif line-clamp-3">{description}</p>
+          <p className="text-sm sm:text-base text-[#8d8d8d] leading-relaxed font-ptserif line-clamp-1 min-h-[1.5rem]">{description}</p>
         </div>
       </Link>
       {/* Article metadata footer */}
