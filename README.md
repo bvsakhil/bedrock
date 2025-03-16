@@ -1,6 +1,6 @@
-# Bedrock CMS Frontend
+# Bedrock
 
-This is the frontend application for the Bedrock CMS project.
+This is the frontend application for the Bedrock.
 
 ## Environment Variables
 
