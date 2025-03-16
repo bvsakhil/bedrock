@@ -17,6 +17,7 @@ interface Post {
   id: string | number;
   title: string;
   excerpt?: string;
+  description?: string;
   content: {
     root: {
       children: any[];
@@ -37,7 +38,21 @@ interface Post {
     [key: string]: any;
   };
   category?: { name: string };
-  categories?: Array<{ name: string }>;
+  categories?: Array<{ 
+    id: number | string;
+    title: string;
+    slug: string;
+    slugLock?: boolean;
+    parent?: any;
+    breadcrumbs?: Array<{
+      id: string;
+      doc: number;
+      url: string;
+      label: string;
+    }>;
+    updatedAt?: string;
+    createdAt?: string;
+  }>;
   author?: { name: string };
   authors?: Array<{ id: number | string; name: string; email?: string }>;
   populatedAuthors?: Array<{ id: number | string; name: string }>;
@@ -97,11 +112,11 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   // Return article-specific metadata
   return {
     title: post.title,
-    description: post.excerpt,
+    description: post.description || post.excerpt,
     authors: authorNames.length > 0 ? authorNames.map(name => ({ name })) : undefined,
     openGraph: {
       title: post.title,
-      description: post.excerpt,
+      description: post.description || post.excerpt,
       type: "article",
       publishedTime: post.publishedAt,
       authors: authorNames.length > 0 ? authorNames : undefined,
@@ -117,7 +132,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     twitter: {
       card: "summary_large_image",
       title: post.title,
-      description: post.excerpt,
+      description: post.description || post.excerpt,
       images: post.heroImage?.url ? [getFullUrl(post.heroImage.url)] : undefined,
     },
     alternates: {
@@ -175,9 +190,23 @@ export default async function ArticlePage({ params }: { params: { slug: string }
   // Get the full image URL if it's a relative path
   const fullImageUrl = getFullUrl(imageUrl);
 
-  // Get category name
-  const categoryName = post.category?.name || 
-                      (post.categories && post.categories.length > 0 ? post.categories[0].name : 'Article');
+  // Get all categories from the post
+  const categories = [];
+  
+  // Add categories from the categories array if it exists
+  if (post.categories && post.categories.length > 0) {
+    categories.push(...post.categories.map(cat => cat.title));
+  }
+  
+  // Add single category if it exists and not already included
+  if (post.category?.name && !categories.includes(post.category.name)) {
+    categories.push(post.category.name);
+  }
+  
+  // Fallback if no categories found
+  if (categories.length === 0) {
+    categories.push('Article');
+  }
 
   // Get author names
   const authorNames = getAuthorNames(post);
@@ -209,13 +238,40 @@ export default async function ArticlePage({ params }: { params: { slug: string }
                 text = `<strong><em>${text}</em></strong>`;
               }
               paragraphContent += text;
+            } else if (textNode.type === 'link' && textNode.children) {
+              // Handle links
+              let linkText = '';
+              textNode.children.forEach((linkChild: any) => {
+                if (linkChild.text) {
+                  linkText += linkChild.text;
+                }
+              });
+              const url = textNode.fields?.url || '#';
+              const newTab = textNode.fields?.newTab ? ' target="_blank" rel="noopener noreferrer"' : '';
+              paragraphContent += `<a href="${url}"${newTab}>${linkText}</a>`;
             }
           });
         }
-        html += `<p>${paragraphContent}</p>`;
+        html += `<p class="mb-6">${paragraphContent}</p>`;
+      } else if (node.type === 'heading') {
+        // Handle heading nodes with proper styling
+        let headingContent = '';
+        const headingTag = node.tag || 'h2';
+        
+        if (node.children && node.children.length > 0) {
+          node.children.forEach((textNode: any) => {
+            if (textNode.text) {
+              // Always make headings bold regardless of format
+              headingContent += textNode.text;
+            }
+          });
+        }
+        
+        // Add proper heading styling with margin for spacing
+        html += `<${headingTag} class="font-bold text-xl sm:text-2xl mt-8 mb-6">${headingContent}</${headingTag}>`;
       } else if (node.type === 'horizontalrule') {
-        // Handle horizontal rule
-        html += '<hr />';
+        // Handle horizontal rule with proper spacing
+        html += '<hr class="my-8" />';
       } else if (node.type === 'block' && node.fields?.blockType === 'mediaBlock') {
         // Handle media blocks
         const media = node.fields.media;
@@ -257,10 +313,21 @@ export default async function ArticlePage({ params }: { params: { slug: string }
             {/* Article title */}
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">{post.title}</h1>
 
+            {/* Article description/excerpt if available */}
+            {(post.description || post.excerpt) && (
+              <p className="text-base sm:text-lg text-[#8d8d8d] mb-6 font-ptserif">
+                {post.description || post.excerpt}
+              </p>
+            )}
+
             {/* Article metadata header - category, author, date */}
             <div className="border border-[#69696a]/50 flex items-center mb-6">
-              <div className="bg-[#ffffff] px-3 sm:px-4 py-1">
-                <span className="text-xs text-[#1e1e1e] leading-none">{categoryName}</span>
+              <div className="flex flex-wrap gap-1">
+                {categories.map((category, index) => (
+                  <div key={index} className="bg-[#ffffff] px-3 sm:px-4 py-1">
+                    <span className="text-xs text-[#1e1e1e] leading-none">{category}</span>
+                  </div>
+                ))}
               </div>
               <div className="px-3 sm:px-4 py-1 ml-auto">
                 <span className="text-xs text-[#8d8d8d] leading-none">
@@ -283,11 +350,6 @@ export default async function ArticlePage({ params }: { params: { slug: string }
 
             {/* Article content */}
             <div className="prose prose-invert max-w-none prose-sm sm:prose-base">
-              {/* Article description/summary */}
-              {post.excerpt && (
-                <p className="text-base sm:text-lg text-[#8d8d8d] mb-4 sm:mb-6 font-ptserif">{post.excerpt}</p>
-              )}
-              
               {/* Article body content */}
               <div dangerouslySetInnerHTML={{ __html: contentHtml }} />
             </div>
