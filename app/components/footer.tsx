@@ -16,14 +16,14 @@ export function Footer() {
             </h1>
           </div>
 
-          {/* Footer bottom section with links and copyright */}
+          {/* Footer bottom section with social links and copyright */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 sm:gap-0 pt-8 border-t border-[#69696a]/50">
             {/* Social media links */}
             <div className="flex flex-wrap gap-4 sm:gap-6 text-xs sm:text-sm order-first sm:order-none">
-              <Link href="https://twitter.com" className="text-[#8d8d8d] hover:text-[#ffffff] transition-colors">
+              <Link href="https://x.com/bedrockonchain" className="text-[#8d8d8d] hover:text-[#ffffff] transition-colors" target="_blank" rel="noopener noreferrer">
                 Twitter
               </Link>
-              <Link href="https://facebook.com" className="text-[#8d8d8d] hover:text-[#ffffff] transition-colors">
+              <Link href="https://warpcast.com/~/channel/bedrock" className="text-[#8d8d8d] hover:text-[#ffffff] transition-colors" target="_blank" rel="noopener noreferrer">
                 Warpcast
               </Link>
             </div>

@@ -257,7 +257,7 @@ const getCategories = cache(async () => {
 
 export default async function Home({ searchParams }: { searchParams: { category?: string } }) {
   // Get the selected category from URL params
-  const selectedCategory = searchParams.category || 'all';
+  const selectedCategory = (await Promise.resolve(searchParams.category)) || 'all';
   
   // Fetch categories first to get the slug if needed
   const categoriesResult = await getCategories();
