@@ -252,7 +252,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
             }
           });
         }
-        html += `<p class="mb-6">${paragraphContent}</p>`;
+        html += `<p class="mb-6 text-[#E0E0E0]/90">${paragraphContent}</p>`;
       } else if (node.type === 'heading') {
         // Handle heading nodes with proper styling
         let headingContent = '';
@@ -267,11 +267,11 @@ export default async function ArticlePage({ params }: { params: { slug: string }
           });
         }
         
-        // Add proper heading styling with margin for spacing
-        html += `<${headingTag} class="font-bold text-xl sm:text-2xl mt-8 mb-6">${headingContent}</${headingTag}>`;
+        // Add proper heading styling with margin for spacing and new text color
+        html += `<${headingTag} class="font-bold text-xl sm:text-2xl mt-8 mb-6 text-[#FFFFFF]">${headingContent}</${headingTag}>`;
       } else if (node.type === 'horizontalrule') {
-        // Handle horizontal rule with proper spacing
-        html += '<hr class="my-8" />';
+        // Handle horizontal rule with proper spacing and new border color
+        html += '<hr class="my-8 border-[#333333]/50" />';
       } else if (node.type === 'block' && node.fields?.blockType === 'mediaBlock') {
         // Handle media blocks
         const media = node.fields.media;
@@ -281,7 +281,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
             : media.url;
           html += `<figure class="my-8">
             <img src="${mediaUrl}" alt="${media.alt || ''}" class="w-full h-auto" />
-            ${media.caption ? `<figcaption class="text-sm text-gray-400 mt-2">${media.caption}</figcaption>` : ''}
+            ${media.caption ? `<figcaption class="text-sm text-[#E0E0E0]/90 mt-2">${media.caption}</figcaption>` : ''}
           </figure>`;
         }
       }
@@ -294,7 +294,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
   const contentHtml = renderLexicalContent(post.content);
 
   return (
-    <main className="min-h-screen bg-[#000000] text-[#ffffff]">
+    <main className="min-h-screen bg-[#1A1A1A] text-[#FFFFFF]">
       {/* Navigation bar component */}
       <NavBar />
 
@@ -303,38 +303,13 @@ export default async function ArticlePage({ params }: { params: { slug: string }
           {/* Back navigation link */}
           <Link
             href="/"
-            className="inline-flex items-center text-[#8d8d8d] hover:text-[#ffffff] mb-6 transition-colors"
+            className="inline-flex items-center text-[#E0E0E0]/90 hover:text-[#FFFFFF] mb-6 transition-colors"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             <span>Back</span>
           </Link>
 
           <article>
-            {/* Article title */}
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">{post.title}</h1>
-
-            {/* Article description/excerpt if available */}
-            {(post.description || post.excerpt) && (
-              <p className="text-base sm:text-lg text-[#8d8d8d] mb-6 font-ptserif">
-                {post.description || post.excerpt}
-              </p>
-            )}
-
-            {/* Article metadata header - category, author, date */}
-            <div className="border border-[#69696a]/50 flex items-center mb-6">
-              <div className="flex flex-wrap gap-1">
-                {categories.map((category, index) => (
-                  <div key={index} className="bg-[#ffffff] px-3 sm:px-4 py-1">
-                    <span className="text-xs text-[#1e1e1e] leading-none">{category}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="px-3 sm:px-4 py-1 ml-auto">
-                <span className="text-xs text-[#8d8d8d] leading-none">
-                  {authorDisplay} | {new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: "2-digit" })}
-                </span>
-              </div>
-            </div>
 
             {/* Article featured image */}
             <div className="relative h-[200px] sm:h-[300px] md:h-[400px] mb-6 sm:mb-8 overflow-hidden">
@@ -348,8 +323,35 @@ export default async function ArticlePage({ params }: { params: { slug: string }
               />
             </div>
 
+            {/* Article title */}
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-[#FFFFFF]">{post.title}</h1>
+
+            {/* Article description/excerpt if available */}
+            {(post.description || post.excerpt) && (
+              <p className="text-base sm:text-lg text-[#E0E0E0]/90 mb-6 font-ptserif">
+                {post.description || post.excerpt}
+              </p>
+            )}
+
+            {/* Article metadata header - category, author, date */}
+            <div className="border border-[#333333]/50 flex items-center mb-6">
+              <div className="flex flex-wrap gap-1">
+                {categories.map((category, index) => (
+                  <div key={index} className="bg-[#FFFFFF] px-3 sm:px-4 py-1">
+                    <span className="text-xs text-[#1A1A1A] leading-none">{category}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="px-3 sm:px-4 py-1 ml-auto">
+                <span className="text-xs text-[#E0E0E0]/90 leading-none">
+                  {authorDisplay} | {new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: "2-digit" })}
+                </span>
+              </div>
+            </div>
+
+
             {/* Article content */}
-            <div className="prose prose-invert max-w-none prose-sm sm:prose-base">
+            <div className="prose prose-invert max-w-none prose-lg sm:prose-xl font-ptserif prose-headings:text-[#FFFFFF] prose-p:text-[#E0E0E0]/90 prose-a:text-[#FFFFFF] hover:prose-a:text-[#FFFFFF]/80 prose-hr:border-[#333333]/50" style={{ fontSize: '1.2rem' }}>
               {/* Article body content */}
               <div dangerouslySetInnerHTML={{ __html: contentHtml }} />
             </div>

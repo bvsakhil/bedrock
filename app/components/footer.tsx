@@ -6,7 +6,7 @@ import Link from "next/link"
 
 export function Footer() {
   return (
-    <footer className="bg-[#000000] text-[#ffffff] border-t border-[#69696a]/50">
+    <footer className="bg-[#1A1A1A] text-[#ffffff] border-t border-[#69696a]/50">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-12 sm:py-16">
         <div className="flex flex-col space-y-8">
           {/* Large BEDROCK logo */}

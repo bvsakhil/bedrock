@@ -309,7 +309,7 @@ export default async function Home({ searchParams }: { searchParams: { category?
   const heroImageUrl = heroContent?.image ? getFullUrl(heroContent.image) : "/placeholder.svg?height=500&width=1200";
   
   return (
-    <main className="min-h-screen bg-[#000000] text-[#ffffff]">
+    <main className="min-h-screen bg-[#1A1A1A] text-[#FFFFFF]">
       {/* Navigation bar component */}
       <NavBar />
 
@@ -325,7 +325,7 @@ export default async function Home({ searchParams }: { searchParams: { category?
 
       {/* Hero Section - Featured article with large image */}
       {heroContent ? (
-      <section className="relative mx-2 sm:mx-4 my-2 sm:my-4 border border-[#69696a]/50">
+      <section className="relative mx-2 sm:mx-4 my-2 sm:my-4 border border-[#333333]/50">
           <Link href={`/article/${heroContent.slug}`} className="block group cursor-pointer">
           {/* Hero image with hover zoom effect */}
           <div className="relative h-[300px] sm:h-[400px] md:h-[500px] overflow-hidden">
@@ -337,30 +337,30 @@ export default async function Home({ searchParams }: { searchParams: { category?
                 priority
                 sizes="100vw"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#000000] to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] to-transparent"></div>
           </div>
 
           {/* Hero content */}
           <div className="p-4 sm:p-6 md:p-8">
             <div className="max-w-3xl">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 text-[#FFFFFF]">
                   {heroContent.title}
               </h2>
-              <p className="text-sm sm:text-base text-[#8d8d8d] mb-4 sm:mb-6 font-ptserif">
+              <p className="text-sm sm:text-base text-[#E0E0E0]/90 mb-4 sm:mb-6 font-ptserif">
                   {heroContent.description}
               </p>
             </div>
           </div>
 
           {/* Article metadata footer */}
-          <div className="mt-auto border-t border-[#69696a]/50 flex items-center">
-            <div className="bg-[#ffffff] px-3 sm:px-4 py-1">
-              <span className="text-xs text-[#1e1e1e] leading-none">
+          <div className="mt-auto border-t border-[#333333]/50 flex items-center">
+            <div className="bg-[#FFFFFF] px-3 sm:px-4 py-1">
+              <span className="text-xs text-[#1A1A1A] leading-none">
                 {heroContent.isSpotlight ? "Spotlight" : "Featured"}
               </span>
             </div>
             <div className="px-3 sm:px-4 py-1 ml-auto">
-                <span className="text-xs text-[#8d8d8d] leading-none">
+                <span className="text-xs text-[#E0E0E0]/90 leading-none">
                   {featuredPost ? 
                     `${getAuthorNames(featuredPost).join(', ') || 'Editorial'} | ${new Date(featuredPost.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: "2-digit" })}` : 
                     'Editorial | ' + new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: "2-digit" })
@@ -373,9 +373,9 @@ export default async function Home({ searchParams }: { searchParams: { category?
       ) : null}
 
       {/* Banner - Animated marquee text with Base logo */}
-      <section className="border-t border-b border-[#69696a]/50">
+      <section className="border-t border-b border-[#333333]/50">
         <div className="py-3 sm:py-4 overflow-hidden bg-[#2151f5]">
-          <div className="whitespace-nowrap text-xl sm:text-2xl md:text-4xl font-bold text-[#ffffff]">
+          <div className="whitespace-nowrap text-xl sm:text-2xl md:text-4xl font-bold text-[#FFFFFF]">
             <div className="inline-block animate-marquee">
               {homepage?.bannerText || "indie media that tracks and boosts real businesses on"}{" "}
               <svg
@@ -421,14 +421,14 @@ export default async function Home({ searchParams }: { searchParams: { category?
         <div className="py-4 sm:py-6 md:py-8 px-0">
           {/* Section header with category filters */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-4 sm:gap-0">
-            <h3 className="text-xl sm:text-2xl font-bold flex items-center">
+            <h3 className="text-xl sm:text-2xl font-bold flex items-center text-[#FFFFFF]">
               Editorial <ArrowRight className="ml-2 h-5 w-5" />
             </h3>
 
             <div className="flex flex-wrap gap-2">
               <Link 
                 href="/"
-                className={`px-3 sm:px-4 py-1.5 ${selectedCategory === 'all' ? 'bg-[#ffffff] text-[#1e1e1e]' : 'bg-transparent border border-[#69696a]/50 text-[#ffffff]'} rounded-none text-sm`}
+                className={`px-3 sm:px-4 py-1.5 ${selectedCategory === 'all' ? 'bg-[#FFFFFF] text-[#1A1A1A]' : 'bg-transparent border border-[#333333]/50 text-[#FFFFFF]'} rounded-none text-sm`}
               >
                 All
               </Link>
@@ -439,7 +439,7 @@ export default async function Home({ searchParams }: { searchParams: { category?
                     <Link
                       key={category.id}
                       href={`/?category=${encodeURIComponent(category.title)}`}
-                      className={`px-3 sm:px-4 py-1.5 ${selectedCategory === category.title ? 'bg-[#ffffff] text-[#1e1e1e]' : 'bg-transparent border border-[#69696a]/50 text-[#ffffff]'} rounded-none text-sm`}
+                      className={`px-3 sm:px-4 py-1.5 ${selectedCategory === category.title ? 'bg-[#FFFFFF] text-[#1A1A1A]' : 'bg-transparent border border-[#333333]/50 text-[#FFFFFF]'} rounded-none text-sm`}
                     >
                       {category.title}
                     </Link>
@@ -452,19 +452,19 @@ export default async function Home({ searchParams }: { searchParams: { category?
                 <>
                   <Link 
                     href="/?category=Consumer"
-                    className={`px-3 sm:px-4 py-1.5 ${selectedCategory === 'Consumer' ? 'bg-[#ffffff] text-[#1e1e1e]' : 'bg-transparent border border-[#69696a]/50 text-[#ffffff]'} rounded-none text-sm`}
+                    className={`px-3 sm:px-4 py-1.5 ${selectedCategory === 'Consumer' ? 'bg-[#FFFFFF] text-[#1A1A1A]' : 'bg-transparent border border-[#333333]/50 text-[#FFFFFF]'} rounded-none text-sm`}
                   >
                 Consumer
                   </Link>
                   <Link 
                     href="/?category=Onchain"
-                    className={`px-3 sm:px-4 py-1.5 ${selectedCategory === 'Onchain' ? 'bg-[#ffffff] text-[#1e1e1e]' : 'bg-transparent border border-[#69696a]/50 text-[#ffffff]'} rounded-none text-sm`}
+                    className={`px-3 sm:px-4 py-1.5 ${selectedCategory === 'Onchain' ? 'bg-[#FFFFFF] text-[#1A1A1A]' : 'bg-transparent border border-[#333333]/50 text-[#FFFFFF]'} rounded-none text-sm`}
                   >
                 Onchain
                   </Link>
                   <Link 
                     href="/?category=Builder"
-                    className={`px-3 sm:px-4 py-1.5 ${selectedCategory === 'Builder' ? 'bg-[#ffffff] text-[#1e1e1e]' : 'bg-transparent border border-[#69696a]/50 text-[#ffffff]'} rounded-none text-sm`}
+                    className={`px-3 sm:px-4 py-1.5 ${selectedCategory === 'Builder' ? 'bg-[#FFFFFF] text-[#1A1A1A]' : 'bg-transparent border border-[#333333]/50 text-[#FFFFFF]'} rounded-none text-sm`}
                   >
                 Builder
                   </Link>
@@ -541,7 +541,7 @@ export default async function Home({ searchParams }: { searchParams: { category?
                 );
               })
             ) : !postsError ? (
-              <div className="col-span-full text-center py-10">
+              <div className="col-span-full text-center py-10 text-[#E0E0E0]/90">
                 <p>No articles found{selectedCategory !== 'all' ? ` in category "${selectedCategory}"` : ''}.</p>
               </div>
             ) : null}
@@ -558,7 +558,7 @@ export default async function Home({ searchParams }: { searchParams: { category?
  */
 function ArticleCard({ image, title, description, category, author, date, slug }: { image: string, title: string, description: string, category: string, author: string, date: string, slug: string }) {
   return (
-    <article className="group bg-[#000000]">
+    <article className="group bg-[#1A1A1A]">
       {/* Article link wrapper */}
       <Link href={`/article/${slug}`} className="block">
         {/* Article image with hover zoom effect */}
@@ -572,20 +572,20 @@ function ArticleCard({ image, title, description, category, author, date, slug }
           />
         </div>
         {/* Article content */}
-        <div className="p-3 sm:p-4 md:p-6 border-l border-r border-[#69696a]/50">
-          <h4 className="text-lg sm:text-xl md:text-2xl font-medium mb-2 sm:mb-3 leading-tight line-clamp-2">
+        <div className="p-3 sm:p-4 md:p-6 border-l border-r border-[#333333]/50">
+          <h4 className="text-lg sm:text-xl md:text-2xl font-medium mb-2 sm:mb-3 leading-tight line-clamp-2 text-[#FFFFFF]">
             {title}
           </h4>
-          <p className="text-sm sm:text-base text-[#8d8d8d] leading-relaxed font-ptserif line-clamp-1 min-h-[1.5rem]">{description}</p>
+          <p className="text-sm sm:text-base text-[#E0E0E0]/90 leading-relaxed font-ptserif line-clamp-1 min-h-[1.5rem]">{description}</p>
         </div>
       </Link>
       {/* Article metadata footer */}
-      <div className="mt-auto border border-[#69696a]/50 flex items-center">
-        <div className="bg-[#ffffff] px-3 sm:px-4 py-1">
-          <span className="text-xs text-[#1e1e1e] leading-none">{category}</span>
+      <div className="mt-auto border border-[#333333]/50 flex items-center">
+        <div className="bg-[#FFFFFF] px-3 sm:px-4 py-1">
+          <span className="text-xs text-[#1A1A1A] leading-none">{category}</span>
         </div>
         <div className="px-3 sm:px-4 py-1 ml-auto">
-          <span className="text-xs text-[#8d8d8d] leading-none">
+          <span className="text-xs text-[#E0E0E0]/90 leading-none">
             {author} | {date}
           </span>
         </div>
