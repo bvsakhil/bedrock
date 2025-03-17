@@ -4,10 +4,11 @@
  */
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Twitter, Share2 } from "lucide-react"
 import { NavBar } from "@/app/components/nav-bar"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
+import { ShareButton } from "../../components/share-button"
 
 // Get the CMS API URL from environment variables
 const CMS_API_URL = process.env.NEXT_PUBLIC_CMS_API_URL || 'http://localhost:3001';
@@ -293,24 +294,31 @@ export default async function ArticlePage({ params }: { params: { slug: string }
   // Generate HTML from the Lexical content
   const contentHtml = renderLexicalContent(post.content);
 
+  // Get the current URL for sharing
+  const articleUrl = `https://bedrock.media/article/${params.slug}`;
+  
+  // Create share text for Twitter and Warpcast
+  const shareText = `${post.title} from @bedrockonchain - ${articleUrl}`;
+  const twitterShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(articleUrl)}`;
+  const warpcastShareUrl = `https://warpcast.com/~/compose?text=${encodeURIComponent(shareText + "\n\n" + articleUrl)}`;
+
   return (
-    <main className="min-h-screen bg-[#1A1A1A] text-[#FFFFFF]">
+    <main className="min-h-screen bg-[#171717] text-[#EBECEB]">
       {/* Navigation bar component */}
       <NavBar />
 
       <div className="container mx-auto px-4 py-6 sm:py-10">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-3xl mx-auto relative">
           {/* Back navigation link */}
           <Link
             href="/"
-            className="inline-flex items-center text-[#E0E0E0]/90 hover:text-[#FFFFFF] mb-6 transition-colors"
+            className="inline-flex items-center text-[#EBECEB]/90 hover:text-[#EBECEB] mb-6 transition-colors"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             <span>Back</span>
           </Link>
 
           <article>
-
             {/* Article featured image */}
             <div className="relative h-[200px] sm:h-[300px] md:h-[400px] mb-6 sm:mb-8 overflow-hidden">
               <Image
@@ -324,11 +332,11 @@ export default async function ArticlePage({ params }: { params: { slug: string }
             </div>
 
             {/* Article title */}
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-[#FFFFFF]">{post.title}</h1>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-[#EBECEB]">{post.title}</h1>
 
             {/* Article description/excerpt if available */}
             {(post.description || post.excerpt) && (
-              <p className="text-base sm:text-lg text-[#E0E0E0]/90 mb-6 font-ptserif">
+              <p className="text-base sm:text-lg text-[#EBECEB]/90 mb-6 font-ptserif">
                 {post.description || post.excerpt}
               </p>
             )}
@@ -337,23 +345,65 @@ export default async function ArticlePage({ params }: { params: { slug: string }
             <div className="border border-[#333333]/50 flex items-center mb-6">
               <div className="flex flex-wrap gap-1">
                 {categories.map((category, index) => (
-                  <div key={index} className="bg-[#FFFFFF] px-3 sm:px-4 py-1">
-                    <span className="text-xs text-[#1A1A1A] leading-none">{category}</span>
+                  <div key={index} className="bg-[#EBECEB] px-3 sm:px-4 py-1">
+                    <span className="text-xs text-[#171717] leading-none">{category}</span>
                   </div>
                 ))}
               </div>
               <div className="px-3 sm:px-4 py-1 ml-auto">
-                <span className="text-xs text-[#E0E0E0]/90 leading-none">
+                <span className="text-xs text-[#EBECEB]/90 leading-none">
                   {authorDisplay} | {new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: "2-digit" })}
                 </span>
               </div>
             </div>
 
-
             {/* Article content */}
-            <div className="prose prose-invert max-w-none prose-lg sm:prose-xl font-ptserif prose-headings:text-[#FFFFFF] prose-p:text-[#E0E0E0]/90 prose-a:text-[#FFFFFF] hover:prose-a:text-[#FFFFFF]/80 prose-hr:border-[#333333]/50" style={{ fontSize: '1.2rem' }}>
+            <div className="prose prose-invert max-w-none prose-lg sm:prose-xl font-ptserif prose-headings:text-[#EBECEB] prose-p:text-[#EBECEB]/90 prose-a:text-[#EBECEB] hover:prose-a:text-[#EBECEB]/80 prose-hr:border-[#333333]/50" style={{ fontSize: '1.2rem' }}>
+              {/* Desktop share buttons - hidden on mobile */}
+              <div className="hidden md:block float-left -ml-16 sticky top-32">
+                <div className="flex flex-col gap-4">
+                  <a 
+                    href={twitterShareUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-[#171717] border border-[#333333] hover:bg-[#333333] p-3 rounded-none transition-colors flex items-center justify-center"
+                    aria-label="Share on Twitter"
+                  >
+                    <Image 
+                      src="/twitter_icon.svg" 
+                      alt="Twitter" 
+                      width={20} 
+                      height={20} 
+                      className="opacity-90 hover:opacity-100 filter invert"
+                    />
+                  </a>
+                  <a 
+                    href={warpcastShareUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-[#171717] border border-[#333333] hover:bg-[#333333] p-3 rounded-none transition-colors flex items-center justify-center"
+                    aria-label="Share on Warpcast"
+                  >
+                    <Image 
+                      src="/warpcast_icon.svg" 
+                      alt="Warpcast" 
+                      width={20} 
+                      height={20} 
+                      className="opacity-90 hover:opacity-100"
+                    />
+                  </a>
+                </div>
+              </div>
+              
               {/* Article body content */}
               <div dangerouslySetInnerHTML={{ __html: contentHtml }} />
+              
+              {/* Mobile share section - only visible on mobile */}
+              <div className="md:hidden mt-12 pt-6 border-t border-[#333333]/50">
+                <div className="border border-[#333333]/50">
+                  <ShareButton title={post.title} url={articleUrl} />
+                </div>
+              </div>
             </div>
           </article>
         </div>

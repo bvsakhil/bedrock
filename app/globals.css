@@ -8,9 +8,9 @@
 
 /* Base color variables */
 :root {
-  --foreground-rgb: 255, 255, 255; /* Primary text/titles: #FFFFFF */
-  --foreground-secondary-rgb: 224, 224, 224; /* Secondary text/descriptions: #E0E0E0 with 90% opacity */
-  --background-rgb: 26, 26, 26; /* Background: #1A1A1A */
+  --foreground-rgb: 235, 236, 235; /* Primary text/titles: #EBECEB */
+  --foreground-secondary-rgb: 235, 236, 235; /* Secondary text/descriptions: #EBECEB with 90% opacity */
+  --background-rgb: 23, 23, 23; /* Background: #171717 */
 }
 
 /* Base body styles */
@@ -44,25 +44,25 @@ body {
 /* Tailwind theme configuration */
 @layer base {
   :root {
-    --background: 0 0% 10.5%; /* #1A1A1A */
-    --foreground: 0 0% 100%; /* #FFFFFF */
-    --card: 0 0% 10.5%; /* #1A1A1A */
-    --card-foreground: 0 0% 100%; /* #FFFFFF */
-    --popover: 0 0% 10.5%; /* #1A1A1A */
-    --popover-foreground: 0 0% 100%; /* #FFFFFF */
-    --primary: 0 0% 100%; /* #FFFFFF */
-    --primary-foreground: 0 0% 10.5%; /* #1A1A1A */
-    --secondary: 0 0% 88%; /* #E0E0E0 */
-    --secondary-foreground: 0 0% 10.5%; /* #1A1A1A */
-    --muted: 0 0% 15%; /* Slightly lighter than background */
-    --muted-foreground: 0 0% 88%; /* #E0E0E0 */
-    --accent: 0 0% 15%; /* Slightly lighter than background */
-    --accent-foreground: 0 0% 100%; /* #FFFFFF */
+    --background: 0 0% 9%; /* #171717 */
+    --foreground: 120 1% 92%; /* #EBECEB */
+    --card: 0 0% 9%; /* #171717 */
+    --card-foreground: 120 1% 92%; /* #EBECEB */
+    --popover: 0 0% 9%; /* #171717 */
+    --popover-foreground: 120 1% 92%; /* #EBECEB */
+    --primary: 120 1% 92%; /* #EBECEB */
+    --primary-foreground: 0 0% 9%; /* #171717 */
+    --secondary: 120 1% 92%; /* #EBECEB */
+    --secondary-foreground: 0 0% 9%; /* #171717 */
+    --muted: 0 0% 13%; /* Slightly lighter than background */
+    --muted-foreground: 120 1% 92%; /* #EBECEB */
+    --accent: 0 0% 13%; /* Slightly lighter than background */
+    --accent-foreground: 120 1% 92%; /* #EBECEB */
     --destructive: 0 84.2% 60.2%; /* Keep original */
-    --destructive-foreground: 0 0% 100%; /* #FFFFFF */
+    --destructive-foreground: 120 1% 92%; /* #EBECEB */
     --border: 0 0% 20%; /* Darker border */
     --input: 0 0% 20%; /* Darker input */
-    --ring: 0 0% 88%; /* #E0E0E0 */
+    --ring: 120 1% 92%; /* #EBECEB */
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
@@ -81,25 +81,25 @@ body {
 
   /* Dark mode theme variables */
   .dark {
-    --background: 0 0% 10.5%; /* #1A1A1A */
-    --foreground: 0 0% 100%; /* #FFFFFF */
-    --card: 0 0% 10.5%; /* #1A1A1A */
-    --card-foreground: 0 0% 100%; /* #FFFFFF */
-    --popover: 0 0% 10.5%; /* #1A1A1A */
-    --popover-foreground: 0 0% 100%; /* #FFFFFF */
-    --primary: 0 0% 100%; /* #FFFFFF */
-    --primary-foreground: 0 0% 10.5%; /* #1A1A1A */
-    --secondary: 0 0% 88%; /* #E0E0E0 */
-    --secondary-foreground: 0 0% 10.5%; /* #1A1A1A */
-    --muted: 0 0% 15%; /* Slightly lighter than background */
-    --muted-foreground: 0 0% 88%; /* #E0E0E0 with opacity handled in components */
-    --accent: 0 0% 15%; /* Slightly lighter than background */
-    --accent-foreground: 0 0% 100%; /* #FFFFFF */
+    --background: 0 0% 9%; /* #171717 */
+    --foreground: 120 1% 92%; /* #EBECEB */
+    --card: 0 0% 9%; /* #171717 */
+    --card-foreground: 120 1% 92%; /* #EBECEB */
+    --popover: 0 0% 9%; /* #171717 */
+    --popover-foreground: 120 1% 92%; /* #EBECEB */
+    --primary: 120 1% 92%; /* #EBECEB */
+    --primary-foreground: 0 0% 9%; /* #171717 */
+    --secondary: 120 1% 92%; /* #EBECEB */
+    --secondary-foreground: 0 0% 9%; /* #171717 */
+    --muted: 0 0% 13%; /* Slightly lighter than background */
+    --muted-foreground: 120 1% 92%; /* #EBECEB with opacity handled in components */
+    --accent: 0 0% 13%; /* Slightly lighter than background */
+    --accent-foreground: 120 1% 92%; /* #EBECEB */
     --destructive: 0 62.8% 30.6%; /* Keep original */
-    --destructive-foreground: 0 0% 100%; /* #FFFFFF */
+    --destructive-foreground: 120 1% 92%; /* #EBECEB */
     --border: 0 0% 20%; /* Darker border */
     --input: 0 0% 20%; /* Darker input */
-    --ring: 0 0% 88%; /* #E0E0E0 */
+    --ring: 120 1% 92%; /* #EBECEB */
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
