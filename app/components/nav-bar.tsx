@@ -73,17 +73,31 @@ export function NavBar() {
         >
           {/* Left section: Logo and date */}
           <div className="flex items-center gap-3 sm:gap-6">
-            <Link href="/" className="font-black text-lg sm:text-xl tracking-wide text-[#EBECEB] font-barlow italic">
-              BE
+            <Link href="/" className="flex items-center">
+              <svg width="36" height="30" viewBox="0 0 36 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_166_2)">
+                  <path d="M6.7356 8.92181L16.3213 1.82408L22.2347 6.24206L12.3124 13.2674L6.7356 8.92181Z" fill="white"/>
+                  <path d="M22.2348 6.24209L35.706 16.1644L31.6502 19.2063L18.2514 9.06664L22.2348 6.24209Z" fill="white"/>
+                  <path d="M29.0669 21.3727L19.4812 28.4705L13.5678 24.0525L23.4901 17.0272L29.0669 21.3727Z" fill="white"/>
+                  <path d="M13.5677 24.0525L0.0964789 14.1302L4.15233 11.0883L17.5511 21.228L13.5677 24.0525Z" fill="white"/>
+                </g>
+                <defs>
+                  <clipPath id="clip0_166_2">
+                    <rect width="35.8025" height="29" fill="white" transform="translate(0 0.5)"/>
+                  </clipPath>
+                </defs>
+              </svg>
             </Link>
             <span className="text-xs sm:text-sm text-[#EBECEB]/90 hidden xs:inline">
               {new Date()
-                .toLocaleDateString("en-US", {
+                .toLocaleString("en-US", {
                   month: "long",
                   day: "2-digit",
-                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
                 })
-                .replace(",", " -")}
+                .replace(" at ", " - ")}
             </span>
           </div>
 
@@ -91,7 +105,7 @@ export function NavBar() {
           <div
             className={`absolute left-1/2 transform -translate-x-1/2 transition-opacity duration-300 sm:pr-0 pr-16 ${
               scrolled ? "opacity-0" : "opacity-100"
-            } hidden xs:block`}
+            } hidden sm:block`}
           >
             <Link href="/" className="font-black italic text-2xl sm:text-4xl tracking-wide text-[#EBECEB] font-barlow">
               BEDROCK
