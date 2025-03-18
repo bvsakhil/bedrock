@@ -51,9 +51,9 @@ export const metadata: Metadata = {
     "startups",
     "innovation",
   ],
-  authors: [{ name: "BEDROCK Media", url: "https://onbedrock.co/" }],
-  creator: "BEDROCK Media",
-  publisher: "BEDROCK Media",
+  authors: [{ name: "Bedrock", url: "https://onbedrock.co/" }],
+  creator: "Bedrock",
+  publisher: "Bedrock",
   formatDetection: {
     email: false,
     address: false,
@@ -79,7 +79,7 @@ export const metadata: Metadata = {
     description: "A publication writing the future of the onchain economy, covering the ideas, builders, and projects ushering in an onchain renaissance.",
     images: [
       {
-        url: "https://onbedrock.co/og-image.jpg",
+        url: "/Bedrock_Preview.png",
         width: 1200,
         height: 630,
         alt: "Bedrock",
@@ -90,15 +90,15 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Bedrock - Writing the future of the onchain economy",
     description: "A publication writing the future of the onchain economy, covering the ideas, builders, and projects ushering in an onchain renaissance.",
-    creator: "@bedrockmedia",
-    site: "@bedrockmedia",
-    images: ["https://onbedrock.co/twitter-image.jpg"],
+    creator: "@bedrockonchain",
+    site: "@bedrockonchain",
+    images: ["/Bedrock_Preview.png"],
   },
   icons: {
     icon: [
-      { url: "/favicon.ico" },
-      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/Bedrock_Icon.ico" },
+      { url: "/Bedrock_Icon-16.png", sizes: "16x16", type: "image/png" },
+      { url: "/Bedrock_Icon-32.png", sizes: "32x32", type: "image/png" },
     ],
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
     other: [
