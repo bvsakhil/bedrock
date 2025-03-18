@@ -195,7 +195,7 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
         </div>
         
         {/* Search results section */}
-        <div className="mt-6 border-t border-[#333333]/50 pt-4 overflow-y-auto">
+        <div className="mt-2 pt-2 overflow-y-auto">
           {/* Loading indicator */}
           {isSearching && (
             <div className="flex items-center justify-center py-4">
@@ -211,27 +211,24 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
           {/* Search results */}
           {!isSearching && searchQuery.length >= 2 && (
             <>
-              <p className="text-[#EBECEB]/90 text-sm mb-4 sticky top-0 bg-[#171717] py-2">
+              <p className="text-[#EBECEB]/90 text-sm mb-2 sticky top-0 bg-[#171717] py-1">
                 {searchResults.length > 0 
                   ? `Found ${searchResults.length} result${searchResults.length === 1 ? '' : 's'}`
                   : 'No results found'}
               </p>
               
               {searchResults.length > 0 ? (
-                <div className="space-y-4">
+                <div className="divide-y divide-[#333333]/50">
                   {searchResults.map((result) => (
                     <Link 
                       key={result.id} 
                       href={`/article/${result.slug}`}
                       onClick={onClose}
-                      className="flex gap-4 hover:bg-[#EBECEB]/5 p-3 transition-colors"
+                      className="flex gap-4 hover:bg-[#EBECEB]/5 p-3 transition-colors block"
                     >
                       {/* Result content */}
                       <div className="flex-1 min-w-0">
                         <h4 className="text-[#EBECEB] font-medium text-base mb-1">{result.title}</h4>
-                        <p className="text-xs text-[#EBECEB]/90 line-clamp-1">
-                          {result.description || result.excerpt || result.meta?.description || ""}
-                        </p>
                         <div className="flex items-center justify-between mt-2">
                           <span className="text-xs bg-[#EBECEB] text-[#171717] px-2 py-0.5">
                             {getResultCategory(result)}
@@ -249,20 +246,14 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                   <Search className="w-12 h-12 text-[#333333] mb-4" />
                   <h3 className="text-[#EBECEB] text-lg font-medium mb-2">No results found</h3>
                   <p className="text-[#EBECEB]/90 text-sm max-w-md">
-                    We couldn't find any articles matching "{searchQuery}". 
-                    Try different keywords or check for typos.
+                    We couldn't find any articles matching "{searchQuery}".
                   </p>
                 </div>
               )}
             </>
           )}
           
-          {/* Initial state or short query */}
-          {!isSearching && searchQuery.length < 2 && (
-            <p className="text-[#EBECEB]/90 text-sm py-4">
-              Type at least 2 characters to search
-            </p>
-          )}
+         
         </div>
       </div>
     </div>
