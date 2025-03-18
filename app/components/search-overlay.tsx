@@ -14,8 +14,8 @@ interface SearchResult {
   category?: { name: string; title?: string };
 }
 
-// Mock data for search results
-const MOCK_ARTICLES: SearchResult[] = [
+// Static articles data
+const STATIC_ARTICLES: SearchResult[] = [
   {
     id: "1",
     title: "The Future of Blockchain Technology",
@@ -50,6 +50,27 @@ const MOCK_ARTICLES: SearchResult[] = [
     slug: "building-community-web3",
     publishedAt: "2023-08-12T12:00:00Z",
     category: { name: "Builder" }
+  },
+  {
+    id: "6",
+    title: "Understanding Zero-Knowledge Proofs",
+    slug: "understanding-zero-knowledge-proofs",
+    publishedAt: "2023-10-10T12:00:00Z",
+    category: { name: "Onchain" }
+  },
+  {
+    id: "7",
+    title: "The Rise of Decentralized Autonomous Organizations",
+    slug: "rise-of-daos",
+    publishedAt: "2023-11-22T12:00:00Z",
+    category: { name: "Builder" }
+  },
+  {
+    id: "8",
+    title: "Blockchain Interoperability Solutions",
+    slug: "blockchain-interoperability",
+    publishedAt: "2023-12-05T12:00:00Z",
+    category: { name: "Onchain" }
   }
 ];
 
@@ -63,63 +84,41 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
   const [searchQuery, setSearchQuery] = useState("")
   const [searchResults, setSearchResults] = useState<SearchResult[]>([])
   const [isSearching, setIsSearching] = useState(false)
-  const [searchError, setSearchError] = useState("")
 
-  // Function to fetch search results
-  const fetchSearchResults = async (query: string) => {
-    if (!query || query.trim().length < 2) {
-      setSearchResults([]);
-      return;
+  // Function to filter results based on search query
+  const filterResults = (query: string) => {
+    if (!query || query.trim().length === 0) {
+      return STATIC_ARTICLES.slice(0, 5); // Show 5 most recent articles by default
     }
-
+    
     setIsSearching(true);
-    setSearchError("");
-
-    try {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 300));
-      
-      // Filter mock data based on title
-      const filteredResults = MOCK_ARTICLES.filter(article => 
-        article.title.toLowerCase().includes(query.toLowerCase())
-      );
-      
-      console.log("Search query:", query);
-      console.log("Filtered results:", filteredResults);
-      
-      setSearchResults(filteredResults);
-    } catch (error) {
-      console.error('Search error:', error);
-      setSearchError("Failed to perform search. Please try again.");
-      setSearchResults([]);
-    } finally {
-      setIsSearching(false);
-    }
+    
+    // Simple filtering logic based on title match
+    const filtered = STATIC_ARTICLES.filter(article => 
+      article.title.toLowerCase().includes(query.toLowerCase())
+    );
+    
+    setIsSearching(false);
+    return filtered;
   };
-
-  // Create a debounced version of the search function
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedSearch = useCallback(
-    debounce((query: string) => {
-      fetchSearchResults(query);
-    }, 300),
-    []
-  );
 
   // Handle search input change
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
-    console.log("Search input changed:", query);
     setSearchQuery(query);
-    debouncedSearch(query);
+    setSearchResults(filterResults(query));
   };
+
+  // Initialize with default results
+  useEffect(() => {
+    setSearchResults(filterResults(""));
+  }, []);
 
   // Effect to add keyboard shortcut for closing search
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Close search on Escape
       if (e.key === 'Escape' && isOpen) {
-        console.log("Escape key pressed, closing search overlay");
         onClose();
       }
     };
@@ -129,28 +128,6 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen, onClose]);
-
-  // Format date for search results
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric', 
-      year: "2-digit" 
-    });
-  };
-
-  // Get category for search result
-  const getResultCategory = (result: SearchResult) => {
-    if (result.category?.title) {
-      return result.category.title;
-    }
-    
-    if (result.category?.name) {
-      return result.category.name;
-    }
-    
-    return "Article";
-  };
 
   if (!isOpen) return null;
 
@@ -191,64 +168,37 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
             </div>
           )}
           
-          {/* Error message */}
-          {searchError && (
-            <div className="text-red-400 text-sm py-2">{searchError}</div>
-          )}
+          {/* Results count */}
+          <p className="text-[#EBECEB]/90 text-sm mb-4 sticky top-0 bg-[#171717] py-2">
+            {searchQuery ? 
+              `Found ${searchResults.length} result${searchResults.length === 1 ? '' : 's'}` : 
+              'Recent articles'}
+          </p>
           
-          {/* Search results */}
-          {!isSearching && searchQuery.length >= 2 && (
-            <>
-              <p className="text-[#EBECEB]/90 text-sm mb-4 sticky top-0 bg-[#171717] py-2">
-                {searchResults.length > 0 
-                  ? `Found ${searchResults.length} result${searchResults.length === 1 ? '' : 's'}`
-                  : 'No results found'}
+          {/* Simple list UI with titles */}
+          {searchResults.length > 0 ? (
+            <ul className="space-y-2">
+              {searchResults.map((article) => (
+                <li key={article.id}>
+                  <Link 
+                    href={`/article/${article.slug}`}
+                    onClick={onClose}
+                    className="block p-3 hover:bg-[#EBECEB]/5 transition-colors"
+                  >
+                    <div className="text-[#EBECEB] font-medium">{article.title}</div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-10 text-center">
+              <Search className="w-12 h-12 text-[#333333] mb-4" />
+              <h3 className="text-[#EBECEB] text-lg font-medium mb-2">No results found</h3>
+              <p className="text-[#EBECEB]/90 text-sm max-w-md">
+                We couldn't find any articles matching "{searchQuery}". 
+                Try different keywords or check for typos.
               </p>
-              
-              {searchResults.length > 0 ? (
-                <div className="space-y-4">
-                  {searchResults.map((result) => (
-                    <Link 
-                      key={result.id} 
-                      href={`/article/${result.slug}`}
-                      onClick={onClose}
-                      className="flex gap-4 hover:bg-[#EBECEB]/5 p-3 transition-colors"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {/* Result content */}
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-[#EBECEB] font-medium text-base mb-1">{result.title}</h4>
-                        <div className="flex items-center justify-between mt-2">
-                          <span className="text-xs bg-[#EBECEB] text-[#171717] px-2 py-0.5">
-                            {getResultCategory(result)}
-                          </span>
-                          <span className="text-xs text-[#EBECEB]/90">
-                            {formatDate(result.publishedAt)}
-                          </span>
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center py-10 text-center">
-                  <Search className="w-12 h-12 text-[#333333] mb-4" />
-                  <h3 className="text-[#EBECEB] text-lg font-medium mb-2">No results found</h3>
-                  <p className="text-[#EBECEB]/90 text-sm max-w-md">
-                    We couldn't find any articles matching "{searchQuery}". 
-                    Try different keywords or check for typos.
-                  </p>
-                </div>
-              )}
-            </>
-          )}
-          
-          {/* Initial state or short query */}
-          {!isSearching && searchQuery.length < 2 && (
-            <p className="text-[#EBECEB]/90 text-sm py-4">
-              Type at least 2 characters to search
-            </p>
+            </div>
           )}
         </div>
       </div>

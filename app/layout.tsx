@@ -97,15 +97,12 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: "/Bedrock_Icon.ico" },
-      { url: "/Bedrock_Icon-16.png", sizes: "16x16", type: "image/png" },
-      { url: "/Bedrock_Icon-32.png", sizes: "32x32", type: "image/png" },
     ],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    apple: [{ url: "/Bedrock_Icon.ico" }],
     other: [
       {
-        rel: "mask-icon",
-        url: "/safari-pinned-tab.svg",
-        color: "#000000",
+        rel: "icon",
+        url: "/Bedrock_Icon.ico",
       },
     ],
   },
