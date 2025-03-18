@@ -33,12 +33,12 @@ const ptSerif = PT_Serif({
  * Includes SEO settings, Open Graph, Twitter cards, and more
  */
 export const metadata: Metadata = {
-  metadataBase: new URL("https://bedrock.media"),
+  metadataBase: new URL("https://onbedrock.co/"),
   title: {
-    default: "BEDROCK - Independent Media Platform",
-    template: "%s | BEDROCK",
+    default: "Bedrock - Writing the future of the onchain economy",
+    template: "%s | Bedrock",
   },
-  description: "BEDROCK is an independent media platform covering builders, consumer tech, and onchain developments.",
+  description: "A publication writing the future of the onchain economy, covering the ideas, builders, and projects ushering in an onchain renaissance.",
   keywords: [
     "news",
     "media",
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     "startups",
     "innovation",
   ],
-  authors: [{ name: "BEDROCK Media", url: "https://bedrock.media" }],
+  authors: [{ name: "BEDROCK Media", url: "https://onbedrock.co/" }],
   creator: "BEDROCK Media",
   publisher: "BEDROCK Media",
   formatDetection: {
@@ -73,26 +73,26 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://bedrock.media",
-    siteName: "BEDROCK",
-    title: "BEDROCK - Independent Media Platform",
-    description: "BEDROCK is an independent media platform covering builders, consumer tech, and onchain developments.",
+    url: "https://onbedrock.co/",
+    siteName: "Bedrock",
+    title: "Bedrock - Writing the future of the onchain economy",
+    description: "A publication writing the future of the onchain economy, covering the ideas, builders, and projects ushering in an onchain renaissance.",
     images: [
       {
-        url: "https://bedrock.media/og-image.jpg",
+        url: "https://onbedrock.co/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "BEDROCK Media",
+        alt: "Bedrock",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "BEDROCK - Independent Media Platform",
-    description: "BEDROCK is an independent media platform covering builders, consumer tech, and onchain developments.",
+    title: "Bedrock - Writing the future of the onchain economy",
+    description: "A publication writing the future of the onchain economy, covering the ideas, builders, and projects ushering in an onchain renaissance.",
     creator: "@bedrockmedia",
     site: "@bedrockmedia",
-    images: ["https://bedrock.media/twitter-image.jpg"],
+    images: ["https://onbedrock.co/twitter-image.jpg"],
   },
   icons: {
     icon: [
@@ -115,9 +115,9 @@ export const metadata: Metadata = {
     yandex: "yandex-verification-code",
   },
   alternates: {
-    canonical: "https://bedrock.media",
+    canonical: "https://onbedrock.co/",
     types: {
-      "application/rss+xml": "https://bedrock.media/rss.xml",
+      "application/rss+xml": "https://onbedrock.co/rss.xml",
     },
   },
   category: "news",
