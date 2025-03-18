@@ -6,6 +6,7 @@ import { useCallback } from 'react'
 interface Category {
   id: string | number;
   title: string;
+  name?: string;
   slug: string;
 }
 
@@ -27,8 +28,8 @@ export function CategoryFilter({ categories, selectedCategory }: {
   )
   
   // Handle category selection without page reload
-  const handleCategoryChange = (category: string) => {
-    const query = category === 'all' ? '' : createQueryString('category', category)
+  const handleCategoryChange = (categorySlug: string) => {
+    const query = categorySlug === 'all' ? '' : createQueryString('category', categorySlug)
     router.push(query ? `/?${query}` : '/', { scroll: false })
   }
   
@@ -46,10 +47,10 @@ export function CategoryFilter({ categories, selectedCategory }: {
           {categories.map((category) => (
             <button
               key={category.id}
-              onClick={() => handleCategoryChange(category.title)}
-              className={`px-3 sm:px-4 py-1.5 ${selectedCategory === category.title ? 'bg-[#EBECEB] text-[#171717]' : 'bg-transparent border border-[#333333]/50 text-[#EBECEB]'} rounded-none text-sm`}
+              onClick={() => handleCategoryChange(category.slug)}
+              className={`px-3 sm:px-4 py-1.5 ${selectedCategory === category.slug ? 'bg-[#EBECEB] text-[#171717]' : 'bg-transparent border border-[#333333]/50 text-[#EBECEB]'} rounded-none text-sm`}
             >
-              {category.title}
+              {category.name || category.title}
             </button>
           ))}
         </>

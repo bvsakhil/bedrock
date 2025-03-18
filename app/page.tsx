@@ -13,7 +13,7 @@ import { CategoryFilter } from "./components/category-filter"
 const CMS_API_URL = process.env.NEXT_PUBLIC_CMS_API_URL || 'http://localhost:3001';
 
 // Define Post interface
-interface Post {
+export interface Post {
   id: string | number;
   title: string;
   excerpt?: string;
@@ -108,27 +108,24 @@ function getAuthorNames(post: Post): string[] {
   return [];
 }
 
-// Create a reusable function to fetch posts
-const getPosts = cache(async (categorySlug?: string) => {
+// Create a reusable function to search posts
+export const searchPosts = cache(async (query: string, limit: number = 10) => {
   try {
-    // Build the URL with optional category filter
-    let url = `${CMS_API_URL}/api/posts?limit=6&sort=-publishedAt`;
-    
-    // Add category filter if provided
-    if (categorySlug) {
-      // Filter by category relationship - this format depends on how your relationships are set up in Payload
-      url += `&where[categories.slug][equals]=${categorySlug}`;
+    if (!query || query.trim().length < 2) {
+      return { docs: [], error: null }
     }
     
-    console.log('Fetching posts with URL:', url);
+    // Use the search proxy route instead of calling the CMS API directly
+    const url = `/api/search?query=${encodeURIComponent(query)}&limit=${limit}`;
     
-    // Fetch posts from the CMS
-    const response = await fetch(url, {
-      next: { revalidate: 60 } // Revalidate every 60 seconds
-    })
+    console.log('Searching posts with URL:', url);
+    
+    // Fetch posts from our local API proxy
+    const response = await fetch(url)
     
     if (!response.ok) {
-      return { error: `Failed to fetch posts: ${response.status} ${response.statusText}`, docs: [] }
+      console.error(`Search failed with status: ${response.status}`);
+      return { error: `Failed to search posts: ${response.status} ${response.statusText}`, docs: [] }
     }
     
     const data = await response.json()
@@ -138,11 +135,42 @@ const getPosts = cache(async (categorySlug?: string) => {
       return { error: 'Invalid response format from API', docs: [] }
     }
     
-    console.log(`Fetched ${data.docs.length} posts`);
-    return { docs: data.docs, error: null } // PayloadCMS returns paginated results with a 'docs' array
+    console.log(`Search found ${data.docs.length} results for "${query}"`);
+    return { docs: data.docs, error: null }
   } catch (error) {
-    console.error('Error fetching posts:', error)
-    return { error: 'Failed to fetch posts. Please try again later.', docs: [] }
+    console.error('Error searching posts:', error)
+    return { error: 'Failed to search posts. Please try again later.', docs: [] }
+  }
+})
+
+// Get posts for the feed section
+const getPosts = cache(async (categorySlug?: string) => {
+  try {
+    let url = `${CMS_API_URL}/api/posts?limit=10`;
+    
+    // If category is specified, add it to the query
+    if (categorySlug) {
+      url += `&where[categories.slug][equals]=${encodeURIComponent(categorySlug)}`;
+    }
+    
+    const response = await fetch(url, {
+      next: { revalidate: 60 }
+    });
+
+    if (!response.ok) {
+      return { docs: [], error: `Failed to fetch posts: ${response.status} ${response.statusText}` };
+    }
+
+    const data = await response.json();
+    
+    if (!data.docs || !Array.isArray(data.docs)) {
+      return { docs: [], error: 'Invalid response format from CMS' };
+    }
+    
+    return { docs: data.docs, error: null };
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    return { docs: [], error: 'Failed to fetch posts. Please try again later.' };
   }
 })
 
@@ -203,109 +231,90 @@ const getFeaturedPost = cache(async () => {
   }
 })
 
-// Get homepage data from Pages collection
-const getHomepage = cache(async () => {
+// Get homepage posts
+const getHomepageData = cache(async () => {
   try {
-    // Try to get the homepage from the Pages collection
-    const response = await fetch(`${CMS_API_URL}/api/pages?where[slug][equals]=home`, {
+    // Fetch regular posts (not featured)
+    const response = await fetch(`${CMS_API_URL}/api/posts?limit=7`, {
       next: { revalidate: 60 }
     })
-    
+
     if (!response.ok) {
-      console.warn(`Homepage fetch failed: ${response.status} ${response.statusText}. Falling back to featured post.`);
-      return { page: null, error: null }; // We'll fall back to featured post
-    }
-    
-    const data = await response.json();
-    
-    if (!data.docs || data.docs.length === 0) {
-      return { page: null, error: null };
+      return { 
+        error: `Failed to fetch homepage data: ${response.status} ${response.statusText}`, 
+        posts: [] 
+      }
     }
 
-    return { page: data.docs[0], error: null };
+    const data = await response.json()
+    
+    // Check if we got any posts back
+    if (!data.docs || !Array.isArray(data.docs)) {
+      return { error: 'Invalid response format from CMS', posts: [] }
+    }
+    
+    return { 
+      posts: data.docs, 
+      error: null 
+    }
   } catch (error) {
-    console.error('Error fetching homepage:', error);
-    return { page: null, error: 'Failed to fetch homepage data' };
+    console.error('Error fetching homepage data:', error)
+    return { 
+      error: 'Failed to fetch homepage data. Please try again later.', 
+      posts: [] 
+    }
   }
 })
 
-// Function to fetch all categories
+// Get categories for menu
 const getCategories = cache(async () => {
   try {
     const response = await fetch(`${CMS_API_URL}/api/categories?limit=100`, {
-      next: { revalidate: 60 } // Cache for 5 minutes
+      next: { revalidate: 60 }
     });
-    
+
     if (!response.ok) {
       return { categories: [], error: `Failed to fetch categories: ${response.status} ${response.statusText}` };
     }
-    
+
     const data = await response.json();
     
-    if (!data.docs) {
-      return { categories: [], error: 'Invalid response format from API' };
+    if (!data.docs || !Array.isArray(data.docs)) {
+      return { categories: [], error: 'Invalid response format from CMS' };
     }
     
-    console.log('Categories fetched:', data.docs);
-    return { categories: data.docs as Category[], error: null };
+    return { categories: data.docs, error: null };
   } catch (error) {
     console.error('Error fetching categories:', error);
-    return { categories: [], error: 'Failed to fetch categories' };
+    return { categories: [], error: 'Failed to fetch categories. Please try again later.' };
   }
-});
+})
 
 export default async function Home({ searchParams }: { searchParams: { category?: string } }) {
-  // Get the selected category from URL params
-  const selectedCategory = (await Promise.resolve(searchParams.category)) || 'all';
+  const categorySlug = searchParams.category;
   
-  // Fetch categories first to get the slug if needed
+  // Fetch categories for the menu
   const categoriesResult = await getCategories();
   const { categories, error: categoriesError } = categoriesResult;
-  
-  // Find the matching category to get its slug
-  const matchingCategory = categories.find(cat => cat.title === selectedCategory);
-  const categorySlug = selectedCategory !== 'all' ? matchingCategory?.slug : undefined;
-  
+
   // Fetch posts, featured post, and homepage in parallel
   const [postsResult, featuredResult, homepageResult] = await Promise.all([
     getPosts(categorySlug),
     getFeaturedPost(),
-    getHomepage()
+    getHomepageData()
   ]);
   
   const { docs: posts, error: postsError } = postsResult;
   const { post: featuredPost, error: featuredError } = featuredResult;
-  const { page: homepage, error: homepageError } = homepageResult;
+  const { posts: homepagePosts, error: homepageError } = homepageResult;
   
   console.log('Categories in Home component:', categories);
-  console.log('Selected category:', selectedCategory);
-  console.log('Category slug:', categorySlug);
-  console.log('Posts count:', posts?.length || 0);
   
-  // Filter posts by category if a category is selected and we didn't filter at the API level
-  const filteredPosts = selectedCategory === 'all' || !categorySlug
-    ? posts 
-    : posts;
-  
-  // Use homepage hero if available, otherwise fall back to featured post
-  const heroContent = homepage?.hero ? {
-    title: homepage.hero.title || homepage.title,
-    description: homepage.hero.description || 'Explore our latest featured content and stay updated with the newest trends and insights.',
-    image: homepage.hero.image?.url,
-    imageAlt: homepage.hero.image?.alt || homepage.title,
-    slug: 'about', // Link to about page or another appropriate page
-    isSpotlight: false // Homepage hero is not a spotlight
-  } : featuredPost ? {
-    title: featuredPost.title,
-    description: featuredPost.description || featuredPost.excerpt || 'Read our featured article to discover the latest insights and trends in the industry.',
-    image: featuredPost.heroImage?.url || featuredPost.image?.url,
-    imageAlt: featuredPost.heroImage?.alt || featuredPost.title,
-    slug: featuredPost.slug,
-    isSpotlight: featuredPost.isSpotlight || false // Use the isSpotlight flag from the post
-  } : null;
-
-  // Get the full image URL if it's a relative path
-  const heroImageUrl = heroContent?.image ? getFullUrl(heroContent.image) : "/placeholder.svg?height=500&width=1200";
+  // Handle errors - for now, we'll log them but still try to render what we can
+  if (postsError) console.error('Posts error:', postsError);
+  if (featuredError) console.error('Featured post error:', featuredError);
+  if (homepageError) console.error('Homepage error:', homepageError);
+  if (categoriesError) console.error('Categories error:', categoriesError);
   
   return (
     <main className="min-h-screen bg-[#171717] text-[#EBECEB]">
@@ -323,14 +332,14 @@ export default async function Home({ searchParams }: { searchParams: { category?
       )}
 
       {/* Hero Section - Featured article with large image */}
-      {heroContent ? (
+      {homepagePosts.length > 0 ? (
       <section className="relative mx-2 sm:mx-4 my-2 sm:my-4 border border-[#333333]/50">
-          <Link href={`/article/${heroContent.slug}`} className="block group cursor-pointer">
+          <Link href={`/article/${homepagePosts[0].slug}`} className="block group cursor-pointer">
           {/* Hero image with hover zoom effect */}
           <div className="relative h-[300px] sm:h-[400px] md:h-[500px] overflow-hidden">
               <Image
-                src={heroImageUrl}
-                alt={heroContent.imageAlt}
+                src={getFullUrl(homepagePosts[0].heroImage?.url || homepagePosts[0].image?.url) || "/placeholder.svg?height=500&width=1200"}
+                alt={homepagePosts[0].heroImage?.alt || homepagePosts[0].title}
                 fill
                 className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
                 priority
@@ -343,10 +352,10 @@ export default async function Home({ searchParams }: { searchParams: { category?
           <div className="p-4 sm:p-6 md:p-8">
             <div className="max-w-3xl">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 text-[#EBECEB]">
-                  {heroContent.title}
+                  {homepagePosts[0].title}
               </h2>
               <p className="text-sm sm:text-base text-[#EBECEB]/90 mb-4 sm:mb-6 font-ptserif">
-                  {heroContent.description}
+                  {homepagePosts[0].description || homepagePosts[0].excerpt || 'Read our featured article to discover the latest insights and trends in the industry.'}
               </p>
             </div>
           </div>
@@ -355,7 +364,7 @@ export default async function Home({ searchParams }: { searchParams: { category?
           <div className="mt-auto border-t border-[#333333]/50 flex items-center">
             <div className="bg-[#EBECEB] px-3 sm:px-4 py-1">
               <span className="text-xs text-[#171717] leading-none">
-                {heroContent.isSpotlight ? "Spotlight" : "Featured"}
+                {homepagePosts[0].isSpotlight ? "Spotlight" : "Featured"}
               </span>
             </div>
             <div className="px-3 sm:px-4 py-1 ml-auto">
@@ -376,7 +385,7 @@ export default async function Home({ searchParams }: { searchParams: { category?
         <div className="py-3 sm:py-4 overflow-hidden">
           <div className="whitespace-nowrap text-xl sm:text-2xl md:text-4xl font-bold text-[#EBECEB]">
             <div className="inline-block animate-marquee">
-              {homepage?.bannerText || "indie media that tracks and boosts real businesses on"}{" "}
+              {homepagePosts.length > 0 ? homepagePosts[0].bannerText || "indie media that tracks and boosts real businesses on" : ""}{" "}
               <svg
                 width="1em"
                 height="1em"
@@ -387,7 +396,7 @@ export default async function Home({ searchParams }: { searchParams: { category?
               >
                 <path d="M54.921 110.034C85.359 110.034 110.034 85.402 110.034 55.017C110.034 24.6319 85.359 0 54.921 0C26.0432 0 2.35281 22.1714 0 50.3923H72.8467V59.6416H3.9565e-07C2.35281 87.8625 26.0432 110.034 54.921 110.034Z" />
               </svg>{" "}
-              — {homepage?.bannerText || "indie media that tracks and boosts real businesses on"}{" "}
+              — {homepagePosts.length > 0 ? homepagePosts[0].bannerText || "indie media that tracks and boosts real businesses on" : ""}{" "}
               <svg
                 width="1em"
                 height="1em"
@@ -398,7 +407,7 @@ export default async function Home({ searchParams }: { searchParams: { category?
               >
                 <path d="M54.921 110.034C85.359 110.034 110.034 85.402 110.034 55.017C110.034 24.6319 85.359 0 54.921 0C26.0432 0 2.35281 22.1714 0 50.3923H72.8467V59.6416H3.9565e-07C2.35281 87.8625 26.0432 110.034 54.921 110.034Z" />
               </svg>{" "}
-              — {homepage?.bannerText || "indie media that tracks and boosts real businesses on"}{" "}
+              — {homepagePosts.length > 0 ? homepagePosts[0].bannerText || "indie media that tracks and boosts real businesses on" : ""}{" "}
               <svg
                 width="1em"
                 height="1em"
@@ -424,13 +433,13 @@ export default async function Home({ searchParams }: { searchParams: { category?
               Editorial <ArrowRight className="ml-2 h-5 w-5" />
             </h3>
 
-            <CategoryFilter categories={categories} selectedCategory={selectedCategory} />
+            <CategoryFilter categories={categories} selectedCategory={categorySlug || 'all'} />
           </div>
 
           {/* Grid of article cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-            {filteredPosts && filteredPosts.length > 0 ? (
-              filteredPosts.map((post: Post) => {
+            {posts && posts.length > 0 ? (
+              posts.map((post: Post) => {
                 // Get image URL - first try heroImage, then check all possible sizes
                 let postImageUrl;
                 
@@ -496,7 +505,7 @@ export default async function Home({ searchParams }: { searchParams: { category?
               })
             ) : !postsError ? (
               <div className="col-span-full text-center py-10 text-[#EBECEB]/90">
-                <p>No articles found{selectedCategory !== 'all' ? ` in category "${selectedCategory}"` : ''}.</p>
+                <p>No articles found{categorySlug !== 'all' ? ` in category "${categorySlug}"` : ''}.</p>
               </div>
             ) : null}
           </div>

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
 import { Search, Loader2 } from "lucide-react"
 import { debounce } from "lodash"
+import { searchPosts } from "../page"
 
 // Define Post interface for search results
 interface SearchResult {
@@ -11,47 +12,26 @@ interface SearchResult {
   title: string;
   slug: string;
   publishedAt: string;
-  category?: { name: string; title?: string };
+  category?: { 
+    name?: string; 
+    title?: string;
+    slug?: string;
+  };
+  categories?: Array<{ 
+    title?: string; 
+    name?: string;
+    slug?: string;
+  }>;
+  description?: string;
+  excerpt?: string;
+  meta?: {
+    title?: string;
+    description?: string;
+  };
+  author?: { name: string };
+  authors?: Array<{ id: number | string; name: string; email?: string }>;
+  populatedAuthors?: Array<{ id: number | string; name: string }>;
 }
-
-// Mock data for search results
-const MOCK_ARTICLES: SearchResult[] = [
-  {
-    id: "1",
-    title: "The Future of Blockchain Technology",
-    slug: "future-of-blockchain",
-    publishedAt: "2023-11-15T12:00:00Z",
-    category: { name: "Onchain" }
-  },
-  {
-    id: "2",
-    title: "Web3 Development Best Practices",
-    slug: "web3-development-best-practices",
-    publishedAt: "2023-12-01T12:00:00Z",
-    category: { name: "Builder" }
-  },
-  {
-    id: "3",
-    title: "NFT Market Trends in 2023",
-    slug: "nft-market-trends-2023",
-    publishedAt: "2023-10-20T12:00:00Z",
-    category: { name: "Consumer" }
-  },
-  {
-    id: "4",
-    title: "Decentralized Finance Revolution",
-    slug: "defi-revolution",
-    publishedAt: "2023-09-05T12:00:00Z",
-    category: { name: "Onchain" }
-  },
-  {
-    id: "5",
-    title: "Building Community in Web3",
-    slug: "building-community-web3",
-    publishedAt: "2023-08-12T12:00:00Z",
-    category: { name: "Builder" }
-  }
-];
 
 interface SearchOverlayProps {
   isOpen: boolean;
@@ -76,21 +56,24 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
     setSearchError("");
 
     try {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 300));
+      // Use the centralized searchPosts function
+      const { docs, error } = await searchPosts(query, 10);
       
-      // Filter mock data based on title
-      const filteredResults = MOCK_ARTICLES.filter(article => 
-        article.title.toLowerCase().includes(query.toLowerCase())
-      );
+      if (error) {
+        throw new Error(error);
+      }
       
-      console.log("Search query:", query);
-      console.log("Filtered results:", filteredResults);
-      
-      setSearchResults(filteredResults);
+      setSearchResults(docs);
     } catch (error) {
       console.error('Search error:', error);
-      setSearchError("Failed to perform search. Please try again.");
+      let errorMessage = "Failed to perform search. Please try again.";
+      
+      // If we have a more specific error message, display it
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      
+      setSearchError(errorMessage);
       setSearchResults([]);
     } finally {
       setIsSearching(false);
@@ -130,6 +113,23 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
     };
   }, [isOpen, onClose]);
 
+  // Helper function to get author names from post
+  function getAuthorNames(post: SearchResult): string[] {
+    if (post.populatedAuthors && post.populatedAuthors.length > 0) {
+      return post.populatedAuthors.map(author => author.name);
+    }
+    
+    if (post.authors && post.authors.length > 0) {
+      return post.authors.map(author => author.name);
+    }
+    
+    if (post.author && post.author.name) {
+      return [post.author.name];
+    }
+    
+    return [];
+  }
+
   // Format date for search results
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', { 
@@ -141,12 +141,24 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
 
   // Get category for search result
   const getResultCategory = (result: SearchResult) => {
+    // First check for category.title
     if (result.category?.title) {
       return result.category.title;
     }
     
+    // Then check for category.name
     if (result.category?.name) {
       return result.category.name;
+    }
+    
+    // Check for categories array - use th/api/posts?where[title][contains]=keywordst one
+    if (result.categories && result.categories.length > 0) {
+      if (result.categories[0].title) {
+        return result.categories[0].title;
+      }
+      if (result.categories[0].name) {
+        return result.categories[0].name;
+      }
     }
     
     return "Article";
@@ -213,18 +225,19 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                       href={`/article/${result.slug}`}
                       onClick={onClose}
                       className="flex gap-4 hover:bg-[#EBECEB]/5 p-3 transition-colors"
-                      target="_blank"
-                      rel="noopener noreferrer"
                     >
                       {/* Result content */}
                       <div className="flex-1 min-w-0">
                         <h4 className="text-[#EBECEB] font-medium text-base mb-1">{result.title}</h4>
+                        <p className="text-xs text-[#EBECEB]/90 line-clamp-1">
+                          {result.description || result.excerpt || result.meta?.description || ""}
+                        </p>
                         <div className="flex items-center justify-between mt-2">
                           <span className="text-xs bg-[#EBECEB] text-[#171717] px-2 py-0.5">
                             {getResultCategory(result)}
                           </span>
                           <span className="text-xs text-[#EBECEB]/90">
-                            {formatDate(result.publishedAt)}
+                            {getAuthorNames(result).join(', ') || 'Anonymous'} | {formatDate(result.publishedAt)}
                           </span>
                         </div>
                       </div>
@@ -253,5 +266,5 @@ export function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
         </div>
       </div>
     </div>
-  );
+  )
 } 
