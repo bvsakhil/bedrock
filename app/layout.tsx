@@ -4,6 +4,7 @@ import { Archivo, Barlow, PT_Serif } from "next/font/google"
 import type { Metadata } from "next"
 import { Footer } from "./components/footer"
 import { ThemeProvider } from "@/components/theme-provider"
+import { Analytics } from "./components/analytics"
 
 // Load and configure fonts with Next.js font optimization
 const archivo = Archivo({
@@ -152,6 +153,7 @@ export default function RootLayout({
           {children}
         </ThemeProvider>
         <Footer />
+        <Analytics />
       </body>
     </html>
   )
