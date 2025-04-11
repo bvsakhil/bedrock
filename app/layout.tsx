@@ -5,6 +5,7 @@ import type { Metadata } from "next"
 import { Footer } from "./components/footer"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster, toast } from 'sonner'
+import { Analytics } from "./components/analytics"
 // Load and configure fonts with Next.js font optimization
 const archivo = Archivo({
   subsets: ["latin"],
@@ -153,6 +154,7 @@ export default function RootLayout({
           {children}
         </ThemeProvider>
         <Footer />
+        <Analytics />
       </body>
     </html>
   )
