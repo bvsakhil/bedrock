@@ -4,7 +4,7 @@ import { Archivo, Barlow, PT_Serif } from "next/font/google"
 import type { Metadata } from "next"
 import { Footer } from "./components/footer"
 import { ThemeProvider } from "@/components/theme-provider"
-
+import { Toaster, toast } from 'sonner'
 // Load and configure fonts with Next.js font optimization
 const archivo = Archivo({
   subsets: ["latin"],
@@ -143,6 +143,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${archivo.variable} ${barlow.variable} ${ptSerif.variable}`} suppressHydrationWarning>
       <body className="font-archivo">
+      <Toaster />
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

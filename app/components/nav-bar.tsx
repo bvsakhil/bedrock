@@ -10,6 +10,9 @@ import Link from "next/link"
 import { Search, Menu } from "lucide-react"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { SearchOverlay } from "./search-overlay"
+import { toast } from "sonner";
+
+const CMS_API_URL = process.env.NEXT_PUBLIC_CMS_API_URL || 'http://localhost:3001';
 
 export function NavBar() {
   // State for tracking scroll position and UI states
@@ -17,6 +20,10 @@ export function NavBar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [subscribeOpen, setSubscribeOpen] = useState(false)
+  const [email, setEmail] = useState("");
+const [loading, setLoading] = useState(false);
+const [success, setSuccess] = useState(false);
+const [error, setError] = useState("");
 
   // Handle search button click
   const handleSearchButtonClick = () => {
@@ -61,6 +68,46 @@ export function NavBar() {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
+
+  const handleSubscribe = async () => {
+    if (!email) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+  
+    setLoading(true);
+  
+    try {
+      const res = await fetch(`${CMS_API_URL}/api/subscribers/subscribe`, {
+        method: "POST",
+        body: JSON.stringify({ maile:email } )
+      });
+  
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || "Subscription failed.");
+      }
+
+      const data = await res.json();
+      if(data.message == "Subscribed!"){
+        toast.success("You're subscribed! 🎉");
+      }
+      else{
+        toast.info(data.message);
+      }
+  
+      
+      setEmail("");
+      setSubscribeOpen(false); // Optional: close the bottom sheet
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.message || "Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  
 
   return (
     <header className="bg-[#171717] text-[#EBECEB] sticky top-0 z-50">
@@ -175,14 +222,22 @@ export function NavBar() {
             </p>
             {/* Subscribe form */}
             <div className="space-y-4">
-              <input
-                type="email"
-                placeholder="Your email address"
-                className="w-full bg-transparent border border-[#333333]/50 p-3 text-[#EBECEB] placeholder:text-[#EBECEB]/90 focus:outline-none focus:border-[#EBECEB]/50"
-              />
-              <button className="w-full bg-[#EBECEB] text-[#171717] py-3 hover:bg-[#EBECEB]/90 transition-colors">
-                Subscribe
-              </button>
+            <input
+              type="email"
+              placeholder="Your email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full bg-transparent border border-[#333333]/50 p-3 text-[#EBECEB] placeholder:text-[#EBECEB]/90 focus:outline-none focus:border-[#EBECEB]/50"
+            />
+
+            <button
+              onClick={handleSubscribe}
+              disabled={loading}
+              className="w-full bg-[#EBECEB] text-[#171717] py-3 hover:bg-[#EBECEB]/90 transition-colors disabled:opacity-50"
+            >
+              {loading ? "Subscribing..." : "Subscribe"}
+            </button>
+
             </div>
           </div>
         </SheetContent>
