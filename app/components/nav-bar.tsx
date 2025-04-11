@@ -8,7 +8,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Search, Menu } from "lucide-react"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { SearchOverlay } from "./search-overlay"
 import { toast } from "sonner";
 
@@ -207,41 +207,32 @@ const [error, setError] = useState("");
       <SearchOverlay isOpen={searchOpen} onClose={handleSearchClose} />
 
       {/* Subscribe Bottom Sheet - Appears when subscribe is clicked */}
-      <Sheet open={subscribeOpen} onOpenChange={setSubscribeOpen}>
-        <SheetContent
-          side="bottom"
-          className="bg-[#171717] border-t border-[#333333]/50 rounded-t-xl max-w-full sm:max-w-lg sm:mx-auto"
-        >
-          <div className="py-6 px-4 sm:px-6">
-            {/* Visual handle for bottom sheet */}
-            <div className="w-12 h-1 bg-[#EBECEB]/20 rounded-full mx-auto mb-6 sm:mb-8"></div>
-            <h2 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3">Join BEDROCK</h2>
-            <p className="text-[#EBECEB]/90 mb-6 text-sm sm:text-base">
-              Subscribe to our newsletter to receive the latest updates on builders, consumer tech, and onchain
-              developments.
-            </p>
-            {/* Subscribe form */}
-            <div className="space-y-4">
-            <input
-              type="email"
-              placeholder="Your email address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-transparent border border-[#333333]/50 p-3 text-[#EBECEB] placeholder:text-[#EBECEB]/90 focus:outline-none focus:border-[#EBECEB]/50"
-            />
+      <Dialog open={subscribeOpen} onOpenChange={setSubscribeOpen}>
+  <DialogContent className="bg-[#171717] text-[#EBECEB] border border-[#333333]/50 max-w-md w-full p-6 sm:p-8 rounded-xl">
+    <h2 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-3">Join BEDROCK</h2>
+    <p className="text-[#EBECEB]/90 mb-6 text-sm sm:text-base">
+      Subscribe to our newsletter to receive the latest updates on builders, consumer tech, and onchain
+      developments.
+    </p>
+    <div className="space-y-4">
+      <input
+        type="email"
+        placeholder="Your email address"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className="w-full bg-transparent border border-[#333333]/50 p-3 text-[#EBECEB] placeholder:text-[#EBECEB]/90 focus:outline-none focus:border-[#EBECEB]/50"
+      />
+      <button
+        onClick={handleSubscribe}
+        disabled={loading}
+        className="w-full bg-[#EBECEB] text-[#171717] py-3 hover:bg-[#EBECEB]/90 transition-colors disabled:opacity-50"
+      >
+        {loading ? "Subscribing..." : "Subscribe"}
+      </button>
+    </div>
+  </DialogContent>
+</Dialog>
 
-            <button
-              onClick={handleSubscribe}
-              disabled={loading}
-              className="w-full bg-[#EBECEB] text-[#171717] py-3 hover:bg-[#EBECEB]/90 transition-colors disabled:opacity-50"
-            >
-              {loading ? "Subscribing..." : "Subscribe"}
-            </button>
-
-            </div>
-          </div>
-        </SheetContent>
-      </Sheet>
     </header>
   )
 }
