@@ -78,7 +78,7 @@ const [error, setError] = useState("");
     setLoading(true);
   
     try {
-      const res = await fetch(`${CMS_API_URL}/api/subscribers/subscribe`, {
+      const res = await fetch(`${CMS_API_URL}api/subscribers/subscribe`, {
         method: "POST",
         body: JSON.stringify({ maile:email } )
       });
