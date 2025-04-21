@@ -385,40 +385,7 @@ export default async function Home({ searchParams }: { searchParams: { category?
         <div className="py-3 sm:py-4 overflow-hidden">
           <div className="whitespace-nowrap text-xl sm:text-2xl md:text-4xl font-bold text-[#EBECEB]">
             <div className="inline-block animate-marquee">
-              {homepagePosts.length > 0 ? homepagePosts[0].bannerText || "indie media that tracks and boosts real businesses on" : ""}{" "}
-              <svg
-                width="1em"
-                height="1em"
-                viewBox="0 0 111 111"
-                fill="currentColor"
-                xmlns="http://www.w3.org/2000/svg"
-                className="inline-block align-middle -mt-1"
-              >
-                <path d="M54.921 110.034C85.359 110.034 110.034 85.402 110.034 55.017C110.034 24.6319 85.359 0 54.921 0C26.0432 0 2.35281 22.1714 0 50.3923H72.8467V59.6416H3.9565e-07C2.35281 87.8625 26.0432 110.034 54.921 110.034Z" />
-              </svg>{" "}
-              — {homepagePosts.length > 0 ? homepagePosts[0].bannerText || "indie media that tracks and boosts real businesses on" : ""}{" "}
-              <svg
-                width="1em"
-                height="1em"
-                viewBox="0 0 111 111"
-                fill="currentColor"
-                xmlns="http://www.w3.org/2000/svg"
-                className="inline-block align-middle -mt-1"
-              >
-                <path d="M54.921 110.034C85.359 110.034 110.034 85.402 110.034 55.017C110.034 24.6319 85.359 0 54.921 0C26.0432 0 2.35281 22.1714 0 50.3923H72.8467V59.6416H3.9565e-07C2.35281 87.8625 26.0432 110.034 54.921 110.034Z" />
-              </svg>{" "}
-              — {homepagePosts.length > 0 ? homepagePosts[0].bannerText || "indie media that tracks and boosts real businesses on" : ""}{" "}
-              <svg
-                width="1em"
-                height="1em"
-                viewBox="0 0 111 111"
-                fill="currentColor"
-                xmlns="http://www.w3.org/2000/svg"
-                className="inline-block align-middle -mt-1"
-              >
-                <path d="M54.921 110.034C85.359 110.034 110.034 85.402 110.034 55.017C110.034 24.6319 85.359 0 54.921 0C26.0432 0 2.35281 22.1714 0 50.3923H72.8467V59.6416H3.9565e-07C2.35281 87.8625 26.0432 110.034 54.921 110.034Z" />
-              </svg>{" "}
-              —{" "}
+              WRITING THE FUTURE OF THE ONCHAIN ECONOMY — WRITING THE FUTURE OF THE ONCHAIN ECONOMY — WRITING THE FUTURE OF THE ONCHAIN ECONOMY —{" "}
             </div>
           </div>
         </div>
