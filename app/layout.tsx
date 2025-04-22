@@ -1,18 +1,19 @@
-import type React from "react"
-import "./globals.css"
-import { Archivo, Barlow, PT_Serif } from "next/font/google"
-import type { Metadata } from "next"
-import { Footer } from "./components/footer"
-import { ThemeProvider } from "@/components/theme-provider"
-import { Toaster, toast } from 'sonner'
-import { Analytics } from "./components/analytics"
+import type React from "react";
+import "./globals.css";
+import { Archivo, Barlow, PT_Serif } from "next/font/google";
+import type { Metadata } from "next";
+import { Footer } from "./components/footer";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "sonner";
+import { PostHogProvider } from "@/components/PostHogProvider";
+
 // Load and configure fonts with Next.js font optimization
 const archivo = Archivo({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-archivo",
   weight: ["300", "400", "500", "600", "700"],
-})
+});
 
 const barlow = Barlow({
   subsets: ["latin"],
@@ -20,14 +21,14 @@ const barlow = Barlow({
   variable: "--font-barlow",
   weight: ["900"],
   style: ["italic"],
-})
+});
 
 const ptSerif = PT_Serif({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-ptserif",
   weight: ["400", "700"],
-})
+});
 
 /**
  * Global metadata configuration for the entire site
@@ -39,7 +40,8 @@ export const metadata: Metadata = {
     default: "Bedrock - Writing the future of the onchain economy",
     template: "%s | Bedrock",
   },
-  description: "A publication writing the future of the onchain economy, covering the ideas, builders, and projects ushering in an onchain renaissance.",
+  description:
+    "A publication writing the future of the onchain economy, covering the ideas, builders, and projects ushering in an onchain renaissance.",
   keywords: [
     "news",
     "media",
@@ -77,7 +79,8 @@ export const metadata: Metadata = {
     url: "https://onbedrock.co/",
     siteName: "Bedrock",
     title: "Bedrock - Writing the future of the onchain economy",
-    description: "A publication writing the future of the onchain economy, covering the ideas, builders, and projects ushering in an onchain renaissance.",
+    description:
+      "A publication writing the future of the onchain economy, covering the ideas, builders, and projects ushering in an onchain renaissance.",
     images: [
       {
         url: "/Bedrock_Preview.png",
@@ -90,7 +93,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Bedrock - Writing the future of the onchain economy",
-    description: "A publication writing the future of the onchain economy, covering the ideas, builders, and projects ushering in an onchain renaissance.",
+    description:
+      "A publication writing the future of the onchain economy, covering the ideas, builders, and projects ushering in an onchain renaissance.",
     creator: "@bedrockonchain",
     site: "@bedrockonchain",
     images: ["/Bedrock_Preview.png"],
@@ -101,7 +105,9 @@ export const metadata: Metadata = {
       { url: "/Bedrock_Icon-16.png", sizes: "16x16", type: "image/png" },
       { url: "/Bedrock_Icon-32.png", sizes: "32x32", type: "image/png" },
     ],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
     other: [
       {
         rel: "mask-icon",
@@ -122,15 +128,15 @@ export const metadata: Metadata = {
     },
   },
   category: "news",
-  generator: 'v0.dev'
-}
+  generator: "v0.dev",
+};
 
 // Add viewport export
 export const viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-}
+};
 
 /**
  * Root layout component that provides the basic HTML structure
@@ -139,23 +145,28 @@ export const viewport = {
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${archivo.variable} ${barlow.variable} ${ptSerif.variable}`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${archivo.variable} ${barlow.variable} ${ptSerif.variable}`}
+      suppressHydrationWarning
+    >
       <body className="font-archivo">
-      <Toaster />
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
-        <Footer />
-        <Analytics />
+        <Toaster />
+        <PostHogProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+          <Footer />
+        </PostHogProvider>
       </body>
     </html>
-  )
+  );
 }
