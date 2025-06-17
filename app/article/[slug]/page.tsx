@@ -282,7 +282,6 @@ export default async function ArticlePage({ params }: { params: { slug: string }
             : media.url;
           html += `<figure class="my-8">
             <img src="${mediaUrl}" alt="${media.alt || ''}" class="w-full h-auto" />
-            ${media.caption ? `<figcaption class="text-sm text-[#E0E0E0]/90 mt-2">${media.caption}</figcaption>` : ''}
           </figure>`;
         }
       }
