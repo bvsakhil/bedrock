@@ -273,18 +273,39 @@ export default async function ArticlePage({ params }: { params: { slug: string }
       } else if (node.type === 'horizontalrule') {
         // Handle horizontal rule with proper spacing and new border color
         html += '<hr class="my-8 border-[#333333]/50" />';
-      } else if (node.type === 'block' && node.fields?.blockType === 'mediaBlock') {
-        // Handle media blocks
-        const media = node.fields.media;
-        if (media && media.url) {
-          const mediaUrl = media.url.startsWith('/api') 
-            ? `${CMS_API_URL}${media.url}` 
-            : media.url;
-          html += `<figure class="my-8">
-            <img src="${mediaUrl}" alt="${media.alt || ''}" class="w-full h-auto" />
-          </figure>`;
+} else if (node.type === 'block' && node.fields?.blockType === 'mediaBlock') {
+  // Handle media blocks
+  const media = node.fields.media;
+  let captionHtml = '';
+
+  if (media && media.url) {
+    const mediaUrl = media.url.startsWith('/api') 
+      ? `${CMS_API_URL}${media.url}` 
+      : media.url;
+
+    // Properly render caption if it's a Lexical node tree
+    if (media.caption && media.caption.root?.children) {
+      media.caption.root.children.forEach((captionNode: any) => {
+        if (captionNode.text) {
+          captionHtml += captionNode.text;
+        } else if (captionNode.children) {
+          captionNode.children.forEach((child: any) => {
+            if (child.text) {
+              captionHtml += child.text;
+            }
+          });
         }
-      }
+      });
+    }
+
+    html += `<figure class="my-8 text-center">
+      <img src="${mediaUrl}" alt="${media.alt || ''}" class="w-full h-auto mx-auto" />
+      ${captionHtml ? `<figcaption class="mt-2 text-sm text-[#AAAAAA] italic">${captionHtml}</figcaption>` : ''}
+    </figure>`;
+  }
+}
+
+
     });
     
     return html;
